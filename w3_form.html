@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang='utf-8'>
+<head>
+<title>FORMS</title>
+<link rel="stylesheet" href="css/w3.css"></link>
+<style>
+  textarea:read-write { user-select: text; }
+  textarea:read-only { user-select: none; }
+  input:required:invalid, input:focus:invalid, input:invalid {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAeVJREFUeNqkU01oE1EQ/mazSTdRmqSxLVSJVKU9RYoHD8WfHr16kh5EFA8eSy6hXrwUPBSKZ6E9V1CU4tGf0DZWDEQrGkhprRDbCvlpavan3ezu+LLSUnADLZnHwHvzmJlvvpkhZkY7IqFNaTuAfPhhP/8Uo87SGSaDsP27hgYM/lUpy6lHdqsAtM+BPfvqKp3ufYKwcgmWCug6oKmrrG3PoaqngWjdd/922hOBs5C/jJA6x7AiUt8VYVUAVQXXShfIqCYRMZO8/N1N+B8H1sOUwivpSUSVCJ2MAjtVwBAIdv+AQkHQqbOgc+fBvorjyQENDcch16/BtkQdAlC4E6jrYHGgGU18Io3gmhzJuwub6/fQJYNi/YBpCifhbDaAPXFvCBVxXbvfbNGFeN8DkjogWAd8DljV3KRutcEAeHMN/HXZ4p9bhncJHCyhNx52R0Kv/XNuQvYBnM+CP7xddXL5KaJw0TMAF8qjnMvegeK/SLHubhpKDKIrJDlvXoMX3y9xcSMZyBQ+tpyk5hzsa2Ns7LGdfWdbL6fZvHn92d7dgROH/730YBLtiZmEdGPkFnhX4kxmjVe2xgPfCtrRd6GHRtEh9zsL8xVe+pwSzj+OtwvletZZ/wLeKD71L+ZeHHWZ/gowABkp7AwwnEjFAAAAAElFTkSuQmCC');
+  background-position: right top;
+  background-repeat: no-repeat;
+  -moz-box-shadow: none;
+  }
+  input:required:valid, input:focus:valid, {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAepJREFUeNrEk79PFEEUx9/uDDd7v/AAQQnEQokmJCRGwc7/QeM/YGVxsZJQYI/EhCChICYmUJigNBSGzobQaI5SaYRw6imne0d2D/bYmZ3dGd+YQKEHYiyc5GUyb3Y+77vfeWNpreFfhvXfAWAAJtbKi7dff1rWK9vPHx3mThP2Iaipk5EzTg8Qmru38H7izmkFHAF4WH1R52654PR0Oamzj2dKxYt/Bbg1OPZuY3d9aU82VGem/5LtnJscLxWzfzRxaWNqWJP0XUadIbSzu5DuvUJpzq7sfYBKsP1GJeLB+PWpt8cCXm4+2+zLXx4guKiLXWA2Nc5ChOuacMEPv20FkT+dIawyenVi5VcAbcigWzXLeNiDRCdwId0LFm5IUMBIBgrp8wOEsFlfeCGm23/zoBZWn9a4C314A1nCoM1OAVccuGyCkPs/P+pIdVIOkG9pIh6YlyqCrwhRKD3GygK9PUBImIQQxRi4b2O+JcCLg8+e8NZiLVEygwCrWpYF0jQJziYU/ho2TUuCPTn8hHcQNuZy1/94sAMOzQHDeqaij7Cd8Dt8CatGhX3iWxgtFW/m29pnUjR7TSQcRCIAVW1FSr6KAVYdi+5Pj8yunviYHq7f72po3Y9dbi7CxzDO1+duzCXH9cEPAQYAhJELY/AqBtwAAAAASUVORK5CYII=');
+  background-position: right top;
+  background-repeat: no-repeat;
+  -moz-box-shadow: none;
+}
+</style>
+</head>
+<body class="w3-container">
+<div class="w3-container">
+    <div id='myForm'></div>
+</div>
+    <section class="w3-container"> 
+       <p>HTML5, w3.css y pymetrick.js, una buena combinación de herramientes  en el desarrollo de webs adaptable a todos los dispositivos.</p> 
+    </section>
+<script src="module/json2form.js"></script>
+<script>
+var jForm = {'id':'ppp','name': 'ppp', 'action':'/action_page', 'method':"get" , 'target':'_blank', 'accept-charset':'UTF-8', 'enctype':'application/x-www-form-urlencoded','autocomplete':'off','novalidate':'novalidate','class':'w3-container w3-card-4 w3-light-grey',
+           'elements': [ {'tag':'DIV','class':'w3-container'},
+                         {'label':'Buscar ','label_class':'w3-label w3-text-blue','type':'search','id':'bu','name':'bu', 'placeholder':'Que deseas buscar?','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'FIELDSET'},
+                         {'tag':'LEGEND','title':'DATOS DE CLIENTE'},{'endtag':'/LEGEND'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Nombre ','label_class':'w3-label w3-text-blue','type':'text','id':'nombre','name':'nombre','value':'','placeholder':'Nombre','required':'required','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Apellidos ','label_class':'w3-label w3-text-blue','type':'text','id':'apellidos','name':'apellidos','value':'','placeholder':'Apellidos','required':'required','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Direccion ','label_class':'w3-label w3-text-blue','type':'text','id':'address','name':'address','value':'','placeholder':'Direccion','required':'required','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Localidad ','label_class':'w3-label w3-text-blue','type':'text','id':'localidad','name':'localidad','value':'', 'placeholder':'Localidad','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Codigo Postal ','label_class':'w3-label w3-text-blue','type':'text','id':'cp','name':'cp','value':'', 'placeholder':'Codigo Postal','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Provincia ','label_class':'w3-label w3-text-blue','type':'select','id':'pr','name':'pr','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Telefono ','label_class':'w3-label w3-text-blue','type':'tel','id':'telefono','name':'telefono','value':'', 'placeholder':'Telefono','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Email ','label_class':'w3-label w3-text-blue','type':'email','id':'em','name':'em','value':'','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Password ','label_class':'w3-label w3-text-blue','type':'password','id':'pass','name':'pass','value':'','class':'w3-input w3-border w3-round'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label':'Peque&ntilde;a ','type':'radio','id':'small','name':'radSize','value':'small','class':'w3-radio','checked':'checked'},
+                         {'label':'Media ','type':'radio','id':'medium','name':'radSize','value':'medium','class':'w3-radio'},
+                         {'label':'Grande ','type':'radio','id':'large','name':'radSize','value':'large','class':'w3-radio'},
+                         {'label':'Extra ','type':'radio','id':'kingsize','name':'radSize','value':'kingsize','class':'w3-radio'},
+                         {'endtag':'/DIV'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'label_post':'Estoy de acuerdo con las Condiciones de Uso ','type':'checkbox','id':'chk','name':'chk','value':'','class':'w3-check'},
+                         {'endtag':'/DIV'},
+                         {'type':'hidden','id':'ref_oculta','name':'ref_oculta','value':''},
+                         {'endtag':'/FIELDSET'},
+                         {'tag':'DIV','class':'w3-container w3-half'},
+                         {'type':'submit','id':'sb','name':'sb', 'value':'ENVIAR','class':'w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow'},
+                         {'type':'reset','id':'rs','name':'rs', 'value':'RESET','class':'w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow'},
+                         {'type':'button','id':'bt','name':'bt', 'value':'ASOCIAR','class':'w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow'},
+                         {'endtag':'/DIV'}
+                       ]
+        };
+var jj = new Schema(document.getElementById('myForm'),jForm);
+</script>
+<footer class="w3-container w3-red"> 
+     <p>Copyright PYMETRICK.ORG</p>
+</footer>
+</BODY>
+</html>

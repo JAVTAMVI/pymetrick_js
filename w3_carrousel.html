@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/w3.css"></link>
+<link rel="stylesheet" href="css/font-awesome.css"></link>
+<body class="w3-container">
+
+<div class="w3-content w3-section" style="max-width:500px">
+<p>The w3-animate-fading class animates an element in and out (takes about 10 seconds).</p>
+
+<img class="mySlides w3-animate-fading" src="images/img_rr_01.jpg" style="width:100%">
+<img class="mySlides w3-animate-fading" src="images/img_rr_02.jpg" style="width:100%">
+<img class="mySlides w3-animate-fading" src="images/img_rr_03.jpg" style="width:100%">
+<img class="mySlides w3-animate-fading" src="images/img_rr_04.jpg" style="width:100%">
+
+</div>
+<!-- buttons -->
+<div>
+	<button class="w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow"><b>Shadow</b></button>
+</div>
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 9000);    
+}
+</script>
+<h2>Hoverable Table</h2>
+<p>The w3-hoverable class adds a grey background color to all table rows when you mouse over them:</p>
+<div class="w3-responsive">
+<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-card-4">
+<thead>
+<tr class="w3-blue">
+  <th>First Name</th>
+  <th>Last Name</th>
+  <th>Points</th>
+</tr>
+</thead>
+<tr>
+  <td>Jill</td>
+  <td>Smith</td>
+  <td>50</td>
+</tr>
+<tr>
+  <td>Eve</td>
+  <td>Jackson</td>
+  <td>94</td>
+</tr>
+<tr>
+  <td>Adam</td>
+  <td>Johnson</td>
+  <td>67</td>
+</tr>
+</table>
+</div>
+<div class="w3-card-12 w3-margin" style="width:50%;max-widtg:400px">
+  <img src="images/img_fjords.jpg" alt="Norway" style="width:100%">
+  <div class="w3-container w3-center">
+    <p>The Troll's tongue in Hardanger, Norway</p>
+    <h5>John Doe</h5>
+  <button class="w3-btn w3-green">Accept</button>
+  </div>
+</div>
+<ul class="w3-ul w3-hoverable">
+  <li><h2>Names</h2></li>
+  <li>Jill</li>
+  <li>Eve</li>
+  <li>Adam</li>
+</ul>
+</body>
+</html>

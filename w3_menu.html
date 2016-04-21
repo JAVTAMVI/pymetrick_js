@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/w3.css"></link>
+<link rel="stylesheet" href="css/font-awesome.css"></link>
+<style>
+.w3-myfont {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+} 
+</style>
+</head>
+<body class="w3-container">
+<!-- menu horizontal fijo -->
+<div class="w3-top">
+	<ul class="w3-navbar w3-card-2 w3-large w3-light-grey w3-left-align">
+	  <!-- collapsible -->
+		  <li class="w3-hide-medium w3-hide-large w3-opennav w3-right">
+	         <a href="javascript:void(0);" onclick="myFunction()">&#9776;</a>
+	      </li>
+	      <!--    -->
+		  <li class="w3-hide-small"><a href="#">Home</a></li>
+		  <li class="w3-hide-small"><a href="#">Link 1</a></li>
+		  <li class="w3-hide-small w3-dropdown-hover"><a href="#">Dropdown <i class="fa fa-caret-down"></i></a>
+		  <div class="w3-dropdown-content w3-white w3-card-4">
+		      <a href="#">Link 1</a>
+		      <a href="#">Link 2</a>
+		      <a href="#">Link 3</a>
+		  </div>
+	  </li>
+	</ul>
+
+	<div id="demo" class="w3-hide w3-hide-large w3-hide-medium ">
+       <ul class="w3-navbar w3-left-align w3-large w3-light-grey">
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+          <li><a href="#">Link 3</a></li>
+          <div class="w3-dropdown-click">
+		    <a onclick="myDropFunc2()" href="#">Dropdown <i class="fa fa-caret-down" ></i></a>
+		    <div id="demoDrop2" class="w3-dropdown-content w3-white w3-card-4">
+		      <a href="#">Link 1</a>
+		      <a href="#">Link 2</a>
+		      <a href="#">Link 3</a>
+		    </div>
+          </div>
+       </ul>
+    </div>
+</div>
+<script>
+function myFunction() {
+    var x = document.getElementById("demo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else { 
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+function myDropFunc2() {
+    var x = document.getElementById("demoDrop2");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        x.previousElementSibling.className += " w3-green";
+    } else { 
+        x.className = x.className.replace(" w3-show", "");
+        x.previousElementSibling.className = x.previousElementSibling.className.replace(" w3-green", "");
+    }
+}
+</script>
+<BR><BR><BR><BR><BR><BR>
+<!-- nav vertical -->
+<nav class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;">
+  <a href="javascript:void(0)" onclick="w3_close()"  class="w3-closenav w3-large w3-hide-large">Close &times;</a>	
+  <a class="w3-hover-blue" href="#">Link</a>
+  <div class="w3-accordion">
+    <a onclick="myAccFunc()" href="#">Accordion <i class="fa fa-caret-down" ></i></a>
+    <div id="demoAcc" class="w3-accordion-content w3-white w3-card-4">
+      <a class="w3-hover-blue" href="#">Link 1</a>
+      <a class="w3-hover-blue" href="#">Link 2</a>
+      <a class="w3-hover-blue" href="#">Link 3</a>
+    </div>
+  </div>
+  <a class="w3-hover-blue" href="#">Link</a>
+  <a class="w3-hover-blue" href="#">Link</a>
+  <a class="w3-hover-blue" href="#">Link</a>
+  <a class="w3-hover-blue" href="#">Link</a>
+</nav>
+
+<div class="w3-main" style="margin-left:200px">
+<header class="w3-container w3-teal">
+  <span class="w3-opennav w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</span>
+  <h2 class="w3-myfont">Responsive Sidenav</h2>
+</header>
+
+<div class="w3-container">
+  <p>In this example, the side navigation will always be displayed on desktop computers and laptops (screens wider than 991px), and hidden on tablets and mobile phones (screens that are less than 991px wide).</p>
+  <p>On tablets and mobile phones the side navigation is replaced with a menu icon that opens the navigation pane when clicked on: it will then overlay/sit on top of the page content.</p>
+  <p><b>Resize the browser window to understand how it works.</b></p>
+</div>
+
+<footer class="w3-container w3-teal">
+  <h5>Footer</h5>
+  <p>Footer information goes here</p>
+</footer>
+     
+</div>
+<script>
+function myAccFunc() {
+    var x = document.getElementById("demoAcc");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        x.previousElementSibling.className += " w3-green";
+    } else { 
+        x.className = x.className.replace(" w3-show", "");
+        x.previousElementSibling.className = x.previousElementSibling.className.replace(" w3-green", "");
+    }
+}
+
+
+function w3_open() {
+    document.getElementsByClassName("w3-sidenav")[0].style.display = "block";
+}
+function w3_close() {
+    document.getElementsByClassName("w3-sidenav")[0].style.display = "none";
+}
+</script>
+</body>
+</html> 
