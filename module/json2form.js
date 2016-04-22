@@ -85,13 +85,11 @@ class Schema {
 		          	  }
 		          }
 	          }
-	          /*this.$_id.appendChild(this.$_form); */
 	      }
-
 	      /* obtener solo elementos */
 	      for (var $j in this.jsForm){
 	      	  /* comprobar elementos de objeto form */
-	      	  if ($j=="elements" && Object.prototype.toString.call( this.jsForm[$j] ) === "[object Array]"){
+	      	  if ($j=="form_elements" && Object.prototype.toString.call( this.jsForm[$j] ) === "[object Array]"){
 	      	  	  for (var $e=0; $e<this.jsForm[$j].length; $e++){
 	      	  	  	  /* seleccionar elementos */
 	      	  	  	  switch (this.jsForm[$j][$e]["type"]){
@@ -151,20 +149,28 @@ class Schema {
                               if(!(typeof this.jsForm[$j][$e]["tag"] == "undefined") || !(typeof this.jsForm[$j][$e]["endtag"] == "undefined")){
                               	  this.setTag(this.jsForm[$j][$e]);
                               }
+                              // tag posibles DIV, FIELDSET
+                              if(!(typeof this.jsForm[$j][$e]["head"] == "undefined")){
+                                  this.setHead(this.jsForm[$j][$e]);
+                              }
 	      	  	  	  }
 	      	  	  }
 	      	  }
 	      }
+	      /* comprobar si existen tag en stack */
+  	  	  while (this.$_tag.length>1) {
+  	  	  	  // existe mas de un tag
+  	  	  	  var $next_tag = this.$_tag.pop();
+  	  	  	  var $prev_tag = this.$_tag.pop();
+  	  	  	  $prev_tag.appendChild($next_tag);
+  	  	  	  this.$_tag.push($prev_tag);
+  	  	  } 
+  	  	  if (this.$_tag.length>0){
+  	  	      this.$_form.appendChild(this.$_tag.pop());
+  	  	  }
+
 	      this.$_id.appendChild(this.$_form);
-
-	      /* obtener tablas */
-	      for ($j in this.jsForm){
-	      	  /* comprobar elementos de objeto form */
-	      	  if (!($j=='elements') && Object.prototype.toString.call( this.jsForm[$j] ) === '[object Array]'){
-	      	  }
-	      }
 	  }
-
       // add Input
 	  addInput($m) {
 	  	  /* tratamiento de label */
@@ -329,7 +335,6 @@ class Schema {
 	  	      }    
 	  	  } 
 	  }
-
 	  // add button 
 	  addButton($m) {
 	  	  var $_button = document.createElement("BUTTON");
@@ -405,7 +410,6 @@ class Schema {
   	          this.$_form.appendChild($_button);
   	      } 
 	  }
-
 	  /* asociar SELECT a un subnodo o form */ 
 	  addSelect($m) {
 	  	  /*
@@ -468,7 +472,6 @@ class Schema {
   	          this.$_form.appendChild($_select);
   	      } 
 	  }
-
 	  /* crear y cerrar nodos (DIV,P,A,FIELDSET,...) */ 
 	  setTag($m) {
 	  	  // incluye etiquetas en FORM como DIV, P, A, SECTION,...
@@ -490,42 +493,6 @@ class Schema {
 		      	  	      break;
 		  	  	  	  case 'disabled':
 		      	  	  	  $tag.setAttribute('disabled',$m['disabled']);
-		      	  	  	  break;
-		  	  	  	  case 'onclick':
-		      	  	  	  $tag.setAttribute('onclick',$m['onclick']);
-		      	  	  	  break;
-		  	  	  	  case 'ondblclick':
-		      	  	  	  $tag.setAttribute('ondblclick',$m['ondblclick']);
-		      	  	  	  break;
-		  	  	  	  case 'onfocus':
-		      	  	  	  $tag.setAttribute('onfocus',$m['onfocus']);
-		      	  	  	  break;
-		  	  	  	  case 'onkeydown':
-		      	  	  	  $tag.setAttribute('onkeydown',$m['onkeydown']);
-		      	  	  	  break;
-		  	  	  	  case 'onkeypress':
-		      	  	  	  $tag.setAttribute('onkeypress',$m['onkeypress']);
-		      	  	  	  break;
-		  	  	  	  case 'onkeyup':
-		      	  	  	  $tag.setAttribute('onkeyup',$m['onkeyup']);
-		      	  	  	  break;
-		  	  	  	  case 'onload':
-		      	  	  	  $tag.setAttribute('onload',$m['onload']);
-		      	  	  	  break;
-		  	  	  	  case 'onmousedown':
-		      	  	  	  $tag.setAttribute('onmousedown',$m['onmousedown']);
-		      	  	  	  break;
-		  	  	  	  case 'onmousemove':
-		      	  	  	  $tag.setAttribute('onmousemove',$m['onmousemove']);
-		      	  	  	  break;
-		  	  	  	  case 'onmouseout':
-		      	  	  	  $tag.setAttribute('onmouseout',$m['onmouseout']);
-		      	  	  	  break;
-		  	  	  	  case 'onmouseover':
-		      	  	  	  $tag.setAttribute('onmouseover',$m['onmouseover']);
-		      	  	  	  break;
-		  	  	  	  case 'onmouseup':
-		      	  	  	  $tag.setAttribute('onmouseup',$m['onmouseup']);
 		      	  	  	  break;
 		  	  	  	  case 'class':
 		      	  	  	  $tag.setAttribute('class',$m['class']);
@@ -554,4 +521,28 @@ class Schema {
 	  	  	  }    
 	  	  }
 	  }
+	         
+
+	  /* incorporar cabecera de Table */ 
+	  setHead($m) {
+	  	  var $td = document.createElement("TD");
+	  	  var $head = document.createTextNode($m['head']);
+	  	  $td.appendChild($head);
+	  	  if (this.$_tag.length>0){
+	                  var last_tag = this.$_tag.pop();
+	                  last_tag.appendChild($td);
+	                  this.$_tag.push(last_tag);
+	      }
+	  }
+
+ 
+    recorrerObjeto(objeto)
+    {
+        var respuesta="";
+        for (var i in objeto)
+        {
+            respuesta+=i+": "+objeto[i];
+        }
+       console.log(respuesta);
+    }
 }

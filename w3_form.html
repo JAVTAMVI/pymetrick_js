@@ -21,16 +21,25 @@
 </style>
 </head>
 <body class="w3-container">
+<section class="w3-container"> 
+   <p>Ejemplo de FORM</p> 
+</section> 
 <div class="w3-container">
-    <div id='myForm'></div>
+    <div id="myForm"></div>
 </div>
-    <section class="w3-container"> 
-       <p>HTML5, w3.css y pymetrick.js, una buena combinación de herramientes  en el desarrollo de webs adaptable a todos los dispositivos.</p> 
-    </section>
+<section class="w3-container"> 
+   <p>Ejemplo de TABLE</p> 
+</section> 
+<div class="w3-container">
+    <div id="myForm2"></div>
+</div>
+<section class="w3-container"> 
+   <p>HTML5, w3.css y pymetrick.js, una buena combinación de herramientes  en el desarrollo de webs adaptable a todos los dispositivos.</p> 
+</section> 
 <script src="module/json2form.js"></script>
 <script>
-var jForm = {'id':'ppp','name': 'ppp', 'action':'/action_page', 'method':"get" , 'target':'_blank', 'accept-charset':'UTF-8', 'enctype':'application/x-www-form-urlencoded','autocomplete':'off','novalidate':'novalidate','class':'w3-container w3-card-4 w3-light-grey',
-           'elements': [ {'tag':'DIV','class':'w3-container'},
+var jFCustomer = {'id':'customer','name': 'customer', 'action':'/action_customer', 'method':'get' , 'target':'_blank', 'accept-charset':'UTF-8', 'enctype':'application/x-www-form-urlencoded','autocomplete':'off','novalidate':'novalidate','class':'w3-container w3-card-4 w3-light-grey',
+           'form_elements': [ {'tag':'DIV','class':'w3-container'},
                          {'label':'Buscar ','label_class':'w3-label w3-text-blue','type':'search','id':'bu','name':'bu', 'placeholder':'Que deseas buscar?','class':'w3-input w3-border w3-round'},
                          {'endtag':'/DIV'},
                          {'tag':'FIELDSET'},
@@ -77,10 +86,26 @@ var jForm = {'id':'ppp','name': 'ppp', 'action':'/action_page', 'method':"get" ,
                          {'type':'submit','id':'sb','name':'sb', 'value':'ENVIAR','class':'w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow'},
                          {'type':'reset','id':'rs','name':'rs', 'value':'RESET','class':'w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow'},
                          {'type':'button','id':'bt','name':'bt', 'value':'ASOCIAR','class':'w3-btn w3-white w3-border-blue w3-hover-purple w3-border w3-round-large w3-text-shadow'},
-                         {'endtag':'/DIV'}
+                         {'endtag':'/DIV'}                         
                        ]
-        };
-var jj = new Schema(document.getElementById('myForm'),jForm);
+          };
+var jFAddress = {'id':'form_address','name': 'form_address', 'action':'/action_address', 'method':'get' , 'target':'_blank', 'accept-charset':'UTF-8', 'enctype':'application/x-www-form-urlencoded','autocomplete':'off','novalidate':'novalidate','class':'w3-container w3-card-4 w3-light-grey',
+           'form_elements': [ {'tag':'TABLE','class':'w3-table w3-striped w3-bordered w3-border w3-hoverable w3-card-4'},
+                         {'tag':'THEAD'},
+                         {'tag':'TR','class':'w3-blue'},
+                         {'head':'Direccion', 'field':{'type':'text','id':'address','name':'address','value':'','placeholder':'Nombre'}},
+                         {'head':'Localidad','field':{'type':'text','id':'city','name':'city','value':'','placeholder':'Ciudad'}},
+                         {'head':'Codigo Postal','field':{'type':'text','id':'postcode','name':'postcode','value':'','placeholder':'Codigo Postal'}},
+                         {'head':'Provincia','field':{'type':'text','id':'zone_code','name':'zone_code','value':'','placeholder':'Provincia'}},
+                         {'head':'Pais','field':{'type':'text','id':'country_iso_code_2','name':'country_iso_code_2','value':'','placeholder':'Pais'}},
+                         {'endtag':'/TR'},
+                         {'endtag':'/THEAD'},
+                         {'endtag':'/TABLE'}
+                       ]
+          };
+
+var jForm = new Schema(document.getElementById('myForm'),jFCustomer);
+var jAddress = new Schema(document.getElementById('myForm2'),jFAddress);
 </script>
 <footer class="w3-container w3-red"> 
      <p>Copyright PYMETRICK.ORG</p>
