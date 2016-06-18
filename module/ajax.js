@@ -1,3 +1,4 @@
+
 /* Implementacion de XMLHTTPRequest para comunicacion AJAX */
 function getXMLHTTPRequest(){
     var $xmlHttp = false;
@@ -33,7 +34,7 @@ function getXMLHTTPRequest(){
     }
 }
 var $xhr = getXMLHTTPRequest();
-var $editLink = ''
+var $editLink = '';
 
 /* Link para la edicion de formularios simples */
 function getEditLink(Link) {
@@ -165,6 +166,12 @@ function OnStateChange() {
             } else {
                 console.log($xhr.responseText);
             }
+            /* comprobar path si admin */
+            if(typeof($path) != "undefined"){
+                if ( $path.indexOf('admin') > -1 ) {
+                    window.location.href = $path;
+                }
+            } 
         } else {
             if ($message_list.length>1) {
                 if (document.getElementById('message') === null){

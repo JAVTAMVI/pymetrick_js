@@ -1,3 +1,4 @@
+
 function is_null(mixed_var){
 	return (mixed_var === null);
 }
@@ -114,4 +115,19 @@ function fillOptions(elementID,json_object) {
     }
     /* inicializa la vista de opciones disponibles */
     $e.selectedIndex = $option_selected;
+}
+
+/* comprobar dimension de un objeto dict si el navegador no soportara Object.keys */
+/* uso if(Object.keys(obj).length>0){  */
+if (!Object.keys) {
+    Object.keys = function (obj) {
+        var arr = [],
+            key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                arr.push(key);
+            }
+        }
+        return arr;
+    };
 }

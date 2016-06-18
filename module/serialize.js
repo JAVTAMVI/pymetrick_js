@@ -1,3 +1,4 @@
+
 /* Serializar elementos de un formulario como string URL */
 function _serialize(form) {
 	if (!form || form.nodeName !== "FORM") {
@@ -131,80 +132,86 @@ function _serialJSON(form) {
 	return JSON.stringify(JSON.parse('{'+q.join(',')+'}'));
 }
 /* Serializar una tabla */
-function _serialTableJSON(table){
-    var oTable = document.getElementById(table);
-    var rowLength = oTable.rows.length;
-    var f = [];
-    var q = [];
-    for (i = 0; i < rowLength; i++){
-        var oCells = oTable.rows.item(i).cells;
-        var cellLength = oCells.length;
-        for(var j = 0; j < cellLength; j++){
-            var input = oCells[j].firstElementChild || oCells[j].firstChild;
-            if (input.id === undefined || input.type === undefined || input.type == "[object Object]") {
-                        continue;
-            } else {
-                switch (input.nodeName) {
-                case 'INPUT':
-                    switch (input.type) {
-                    case 'text':
-                    case 'email':
-                    case 'tel':
-                    case 'hidden':
-                    case 'password':
-                    case 'button':
-                    case 'reset':
-                    case 'submit':
-                    case 'number':
-                        q.push( '"' + input.id + '":"' + input.value + '"' );
-                        break;
-                    case 'checkbox':
-                    case 'radio':
-                        if (input.checked) {
-                            q.push( '"' + input.id + '":"' + input.value + '"' );
-                        }                       
-                        break;
-                    case 'file':
-                        break;
-                    }
-                    break;           
-                case 'TEXTAREA':
-                    q.push( '"' + input.id + '":"' + input.value + '"' );
-                    break;
-                case 'SELECT':
-                    switch (input.type) {
-                    case 'select-one':
-                        q.push( '"' + input.id + '":"' + input.value + '"' );
-                        break;
-                    case 'select-multiple':
-                                s = [];
-                        for (j = input.options.length - 1; j >= 0; j = j - 1) {
-                            if (input.options[j].selected) {
-                                            s.push('"'+ input.options[j].value + '"');
+function _serialTableJSON(tableID){
+   var $node = ['INPUT','SELECT','TEXTAREA'];
+   var $tbl = document.getElementById(tableID);
+   var $f=[];
+   try {
+      for (var $i = 0; $i < $tbl.rows.length; $i++){
+           var $q = {};
+           for (var $j = 0; $j < $tbl.rows[$i].cells.length;$j++){
+              /* comprobar elementos de celdas */
+              if ($tbl.rows[$i].cells[$j].firstElementChild !== null || $tbl.rows[$i].cells[$j].firstChild !== null ){
+                  var $input = $tbl.rows[$i].cells[$j].firstElementChild || $tbl.rows[$i].cells[$j].firstChild;
+                  if ($input!==null){
+                      if (typeof $node[$input.nodeName] !== undefined){
+                          switch ($input.nodeName) {
+                            case 'INPUT':
+                                switch ($input.type) {
+                                  case 'text':
+                                  case 'email':
+                                  case 'tel':
+                                  case 'hidden':
+                                  case 'password':
+                                  case 'button':
+                                  case 'reset':
+                                  case 'submit':
+                                  case 'number':
+                                      $q[$input.id]=$input.value;
+                                      break;
+                                  case 'checkbox':
+                                  case 'radio':
+                                      if ($input.checked) {
+                                          $q[$input.id]=$input.value;
+                                      }                       
+                                      break;
+                                  case 'file':
+                                      break;
+                                }
+                                break;           
+                            case 'TEXTAREA':
+                                $q[$input.id]=$input.value;
+                                break;
+                            case 'SELECT':
+                                switch ($input.type) {
+                                  case 'select-one':
+                                      $q[$input.id]=$input.value;
+                                      break;
+                                  case 'select-multiple':
+                                      var $s = [];
+                                      for ($k = $input.options.length - 1; $k >= 0; $k = $k - 1) {
+                                          if ($input.options[$k].selected) {
+                                              $s.push($input.options[$k].value);
+                                          }
+                                          $q[$input.id]=$s;
                                       }
-                        q.push( '"' + input.id + '":[' + s.join(',') + ']'  );
-                        }
-                        break;
-                    }
-                    break;
-                case 'BUTTON':
-                    switch (input.type) {
-                    case 'reset':
-                    case 'submit':
-                    case 'button':
-                        q.push( '"' + input.id + '":"' + input.value + '"' );
-                        break;
-                    }
-                    break;
-                }
-            }
-        } 
-        /* devuelve convertido en un objeto json javascript */
-        if (q.length>0){
-            f.push('{'+q.join(',')+'}');
-        }
-    } 
-    return JSON.stringify(JSON.parse('['+f.join(',')+']'));
+                                      break;
+                                }
+                                break;
+                            case 'BUTTON':
+                                switch ($input.type) {
+                                  case 'reset':
+                                  case 'submit':
+                                  case 'button':
+                                      /* $q[$input.id]=$input.value; */
+                                      break;
+                                }
+                                break;
+                          }
+                      
+                      }
+                  }
+              }
+           }
+           if (Object.keys($q).length>0){
+               $f.push($q);
+           }
+       }
+       return JSON.stringify($f);
+
+   } catch (e) {
+       console.log(e);
+   }
 }
 /* Traducir elementos serializados como string URL e insertarlos en valores */
 function _unserialize(mixed_var){

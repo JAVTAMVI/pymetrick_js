@@ -1,19 +1,18 @@
-// FUNCIONES BASE64 encode/decode *************************************************************************************
 
-/* var cadena = Base64.encode('w00t');
-   var cadena = Base64.decode('dzAwdA==');
-   var cadena = Base64._utf8_encode('w00t');
-   var cadena = Base64._utf8_decode('dzAwdA==');
-*/
+// FUNCIONES BASE64 encode/decode 
+
+// var cadena = Base64.encode('w00t');
+//   var cadena = Base64.decode('dzAwdA==');
+//   var cadena = Base64._utf8_encode('w00t');
+//   var cadena = Base64._utf8_decode('dzAwdA==');
+//
 var Base64 = {
-	// private property
 	$keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-	// public method for encoding
 	encode : function (string) {
 		var $output = "";
 		var $chr1, $chr2, $chr3, $enc1, $enc2, $enc3, $enc4;
 		var $i = 0;
-		$str = Base64._utf8_encode(string);
+		var $str = Base64._utf8_encode(string);
 		while ($i < $str.length) {
 
 			$chr1 = $str.charCodeAt($i++);
@@ -39,15 +38,13 @@ var Base64 = {
 
 		return $output;
 	},
-
-	// public method for decoding
 	decode : function (string) {
 		var $output = "";
 		var $chr1, $chr2, $chr3;
 		var $enc1, $enc2, $enc3, $enc4;
 		var $i = 0;
 
-		$str = string.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+		var $str = string.replace(/[^A-Za-z0-9\+\/\=]/g, "");
 
 		while ($i < $str.length) {
 
@@ -76,8 +73,6 @@ var Base64 = {
 		return $output;
 
 	},
-
-	// private method for UTF-8 encoding
 	_utf8_encode : function (string) {
 		var $str = string.replace(/\r\n/g,"\n");
 		var $utftext = "";
@@ -103,12 +98,12 @@ var Base64 = {
 
 		return $utftext;
 	},
-
-	// private method for UTF-8 decoding
 	_utf8_decode : function (utftext) {
 		var $str = "";
 		var $i = 0;
-		var $c = $c1 = $c2 = 0;
+		var $c = 0;
+                var $c1 = 0;
+                var $c2 = 0;
 
 		while ( $i < utftext.length ) {
 
@@ -135,4 +130,4 @@ var Base64 = {
 		return $str;
 	}
 
-}
+};

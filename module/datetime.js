@@ -1,22 +1,23 @@
+
 // UTILIDADES VARIAS **********************************************************************************************
 
-/* Poner fecha y hora en HTML
-   para utilizar esta funcion debe insertar un codigo igual al siguiente en HTML
-   <SCRIPT LANGUAGE="JavaScript">
-   document.write(customDateString(new Date()))
-    </SCRIPT>
-*/
-dayNames_es = new Array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado")
-dayNames_fr = new Array("dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi")
-dayNames_pt = new Array("Domingo","Segunda-feira","Terça-Feira","Quarta-Feira","Quinta-Feira","Sexta-Feira","Sabado")
-dayNames_en = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-monthNames_es = new Array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-monthNames_fr = new Array("janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre");
-monthNames_pt = new Array("Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro");
-monthNames_en = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+// Poner fecha y hora en HTML
+// para utilizar esta funcion debe insertar un codigo igual al siguiente en HTML
+// <SCRIPT LANGUAGE="JavaScript">
+// document.write(customDateString(new Date()))
+// </SCRIPT>
+//
+var dayNames_es = new Array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado");
+var dayNames_fr = new Array("dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi");
+var dayNames_pt = new Array("Domingo","Segunda-feira","Terça-Feira","Quarta-Feira","Quinta-Feira","Sexta-Feira","Sabado");
+var dayNames_en = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
+var monthNames_es = new Array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+var monthNames_fr = new Array("janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre");
+var monthNames_pt = new Array("Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro");
+var monthNames_en = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 function customDateString(oneDate) {
     var ln = (window.navigator.language||navigator.browserLanguage).substring(0,2);
-    ln = 'fr'
+    ln = 'fr';
     if(ln == 'en'){ 
        var theDay = dayNames_en[oneDate.getDay() ];
        var theMonth = monthNames_en[oneDate.getMonth() ];
@@ -33,26 +34,26 @@ function customDateString(oneDate) {
        var theDay = dayNames_es[oneDate.getDay() ];
        var theMonth = monthNames_es[oneDate.getMonth() ];
     }
-    var theYear = oneDate.getYear()
-    theYear += (theYear < 1000) ? 1900 : 0
+    var theYear = oneDate.getYear();
+    theYear += (theYear < 1000) ? 1900 : 0;
     if(ln == 'en'){ 
-       return theDay + ", " + theMonth + oneDate.getDate() + "th, "+ theYear
+       return theDay + ", " + theMonth + oneDate.getDate() + "th, "+ theYear;
     }else if(ln == 'es' || ln == 'pt' || ln == 'de'){
-       return theDay + ", " + oneDate.getDate() + " de "+ theMonth + " de " + theYear
+       return theDay + ", " + oneDate.getDate() + " de "+ theMonth + " de " + theYear;
     }else if(ln == 'fr' ){
-       return theDay + ", le " + oneDate.getDate() + " "+ theMonth + " " + theYear
+       return theDay + ", le " + oneDate.getDate() + " "+ theMonth + " " + theYear;
     } else {
-       return theDay + ", " + oneDate.getDate() + " de "+ theMonth + " de " + theYear
+       return theDay + ", " + oneDate.getDate() + " de "+ theMonth + " de " + theYear;
     }
     
 }
 
-/* Poner fecha y hora local en formato serial
-   para utilizar esta funcion debe insertar un codigo igual al siguiente en HTML
-   <SCRIPT LANGUAGE="JavaScript">
-   document.write(customDateSerial()
-    </SCRIPT>
-*/
+// Poner fecha y hora local en formato serial
+// para utilizar esta funcion debe insertar un codigo igual al siguiente en HTML
+// <SCRIPT LANGUAGE="JavaScript">
+// document.write(customDateSerial()
+// </SCRIPT>
+//
 function customDateSerial() {
    var $dat = new Date();
    var $y = dat.getFullYear();
@@ -65,12 +66,12 @@ function customDateSerial() {
    return $ds;
 }
 
-/* Poner fecha y hora UTC en formato serial
-   para utilizar esta funcion debe insertar un codigo igual al siguiente en HTML
-   <SCRIPT LANGUAGE="JavaScript">
-   document.write(customDateUTCSerial()
-    </SCRIPT>
-*/
+// Poner fecha y hora UTC en formato serial
+// para utilizar esta funcion debe insertar un codigo igual al siguiente en HTML
+// <SCRIPT LANGUAGE="JavaScript">
+// document.write(customDateUTCSerial()
+//  </SCRIPT>
+//
 function customDateUTCSerial() {
    var $dat = new Date();
    var $y = $dat.getUTCFullYear();

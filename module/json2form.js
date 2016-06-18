@@ -1,13 +1,29 @@
-/* funcion para crear forms o forms IN TABLE desde JSON  */
+
+// funcion para crear forms o forms IN TABLE desde JSON  
 //  jForm = {'id':'','name': '', 'action':'/action_page', 'method':"get" , 'target':'_blank', 'accept-charset':'UTF-8', 'enctype':'application/x-www-form-urlencoded','autocomplete':'off','novalidate':'',
-//           'elements': [ {'label':'','type':'','id':'','name':'','value':'', 'class':'', 'style':'',...}, ...]    // type : text, number, date, hidden, file, password, email, submit, reset, radio, checkbox, button, url, tel, range, search
+//           'form_elements': [ {'label':'','type':'','id':'','name':'','value':'', 'class':'', 'style':'',...}, ...]    // type : text, number, date, hidden, file, password, email, submit, reset, radio, checkbox, button, url, tel, range, search
 //                                                                                  // attributes : disabled, max, maxlength, min, pattern, readonly, required, size, step, value
 //                                                                                  // events ...
-//                         {'legend':'','type':'fieldset',...},
-//                         ]
-//            'table'  : [ {'table_name': [{'head_title':'','type':'','id':'','name':'','value':'', 'class':'', 'style':'',...},   // crear form en tablas
-//                       ]
-//          }
+//                              {'legend':'','type':'fieldset',...},
+//                            ]
+//          };
+//
+//	jForm = {'id':'form_address','name': 'form_address', 'action':'/action_address', 'method':'get' , 'target':'_blank', 'accept-charset':'UTF-8', 'enctype':'application/x-www-form-urlencoded','autocomplete':'off','novalidate':'novalidate','class':'w3-container w3-card-4 w3-light-grey',
+//	           'form_elements': [ {'tag':'TABLE','class':'w3-table w3-striped w3-bordered w3-border w3-hoverable w3-card-4'},
+//		                         {'tag':'THEAD'},
+//		                         {'tag':'TR','class':'w3-blue'},
+//		                         {'head':'Direccion', 'field':{'type':'text','id':'address','name':'address','value':'','placeholder':'Nombre'}},
+//		                         {'head':'Localidad','field':{'type':'text','id':'city','name':'city','value':'','placeholder':'Ciudad'}},
+//		                         {'head':'Codigo Postal','field':{'type':'text','id':'postcode','name':'postcode','value':'','placeholder':'Codigo Postal'}},
+//		                         {'head':'Provincia','field':{'type':'text','id':'zone_code','name':'zone_code','value':'','placeholder':'Provincia'}},
+//		                         {'head':'Pais','field':{'type':'text','id':'country_iso_code_2','name':'country_iso_code_2','value':'','placeholder':'Pais'}},
+//		                         {'endtag':'/TR'},
+//		                         {'endtag':'/THEAD'},
+//                               {'tag':'TBODY'};
+//                               {'endtag':'/TBODY'}
+//		                         {'endtag':'/TABLE'}
+//	                          ]
+//	        };
 //  onblur    	Deseleccionar el elemento
 //  onchange  	Deseleccionar un elemento que se ha modificado
 //  onclick   	Pinchar y soltar el raton
@@ -28,149 +44,131 @@
 //  onsubmit 	Enviar el formulario 	
 //  onunload 	Se abandona la pÃ¡gina (por ejemplo al cerrar el navegador)
 
-var jPattern = {'email':'/^[w-.+]+@[a-zA-Z0-9.]+.[a-zA-Z0-9]{2,4}$/',
-               'url':'(http|https)://.+',
-               'password':'/^[A-Za-z0-9!@#$%^&*()_]{6,20}$/',
-               'time24hhmmss': '^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$',
-               'time24hhmm': '^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$',
-               'time12hhmmss': '^(1[0-2]|0?[1-9]):([0-5]?[0-9]):([0-5]?[0-9])$',
-               'time12hhmm': '^(1[0-2]|0?[1-9]):([0-5]?[0-9])$',
-               'percentage': '^(100|[1-9]?[0-9])$',
-               'number': '/^[0-9]+$/'
-           }
+//var jPattern = {'email':'/^[w-.+]+@[a-zA-Z0-9.]+.[a-zA-Z0-9]{2,4}$/',
+//               'url':'(http|https)://.+',
+//               'password':'/^[A-Za-z0-9!@#$%^&*()_]{6,20}$/',
+//               'time24hhmmss': '^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$',
+//               'time24hhmm': '^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$',
+//               'time12hhmmss': '^(1[0-2]|0?[1-9]):([0-5]?[0-9]):([0-5]?[0-9])$',
+//               'time12hhmm': '^(1[0-2]|0?[1-9]):([0-5]?[0-9])$',
+//               'percentage': '^(100|[1-9]?[0-9])$',
+//               'number': '/^[0-9]+$/'
+//           };
 
-class Schema {
-	  constructor(id,_jsForm) {
-	  	  this.jsForm = _jsForm;
+class jsonForm {
+	  constructor(id,_jsForm,_jsValue) {
+	  	  this.$jsForm = _jsForm;
+	  	  this.$jsValue = _jsValue;
 	  	  this.$_id = id;
-	  	  this.$_form = document.createElement('FORM');
 	  	  this.$_tag = [];
-	      /* comprobar form */
-	      if(!(typeof this.jsForm["id"] == "undefined") || !(typeof this.jsForm["name"] == "undefined")){
-	          for (var $j in this.jsForm){
-	          	  if (!(Object.prototype.toString.call( this.jsForm[$j] ) === "[object Object]") && !(Object.prototype.toString.call( this.jsForm[$j] ) === "[object Array]")){
-		          	  /* seleccionar datos form */
-		          	  switch ($j){
-		          	  	  case 'id':
-		          	  	      this.$_form.setAttribute("id",this.jsForm[$j]);
-		          	  	      this.$_form.setAttribute("name",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'name':
-		          	  	      this.$_form.setAttribute("id",this.jsForm[$j]);
-		          	  	      this.$_form.setAttribute("name",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'action':
-		          	  	      this.$_form.setAttribute("action",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'method':
-		          	  	      this.$_form.setAttribute("method",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'target':
-		          	  	      this.$_form.setAttribute("target",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'enctype':
-		          	  	      this.$_form.setAttribute("enctype",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'accept-charset':
-		          	  	      this.$_form.setAttribute("accept-charset",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'autocomplete':
-		          	  	     this.$_form.setAttribute("autocomplete",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  case 'novalidate':
-		          	  	      this.$_form.setAttribute("novalidate",this.jsForm[$j]);
-		          	  	      break;
-		          	  	  default:
-		          	  	      break;
-		          	  }
+	  	  this.createForm();
+
+	  }
+	  /* crear Form */
+	  createForm(){	  
+	      /* crear form */
+	      if (typeof this.$_form == "undefined"){
+	          this.$_form = document.createElement('FORM');
+              this.$_tag = [];
+
+		      /* incorporar elementos al form */
+		      if(!(typeof this.$jsForm["id"] == "undefined") || !(typeof this.$jsForm["name"] == "undefined")){
+		          for (var $j in this.$jsForm){
+		          	  if (!(Object.prototype.toString.call( this.$jsForm[$j] ) === "[object Object]") && !(Object.prototype.toString.call( this.$jsForm[$j] ) === "[object Array]")){
+			          	  /* seleccionar datos form */
+			          	  switch ($j){
+			          	  	  case 'id':
+			          	  	      this.$_form.setAttribute("id",this.$jsForm[$j]);
+			          	  	      this.$_form.setAttribute("name",this.$jsForm[$j]);
+			          	  	      break;
+			          	  	  case 'name':
+			          	  	      this.$_form.setAttribute("id",this.$jsForm[$j]);
+			          	  	      this.$_form.setAttribute("name",this.$jsForm[$j]);
+			          	  	      break;
+			          	  	  default:
+			                      try {
+			                          this.$_form.setAttribute($j,this.$jsForm[$j]); 
+			                      } catch(err) {
+			                          console.log(err.message);
+			                      }   
+			                      break;
+			          	  }
+			          }
 		          }
-	          }
-	      }
-	      /* obtener solo elementos */
-	      for (var $j in this.jsForm){
+		      }
+	          this.addElement();
+		      /* comprobar si existen tag en stack */
+	  	  	  while (this.$_tag.length>1) {
+	  	  	  	  // existe mas de un tag
+	  	  	  	  var $next_tag = this.$_tag.pop();
+	  	  	  	  var $prev_tag = this.$_tag.pop();
+	  	  	  	  $prev_tag.appendChild($next_tag);
+	  	  	  	  this.$_tag.push($prev_tag);
+	  	  	  } 
+	  	  	  if (this.$_tag.length>0){
+	  	  	      this.$_form.appendChild(this.$_tag.pop());
+	  	  	  }
+
+		      this.$_id.appendChild(this.$_form);
+		  }
+	  }
+
+	  addElement(){
+	      /* incorporar elementos */
+	      for (var $j in this.$jsForm){
 	      	  /* comprobar elementos de objeto form */
-	      	  if ($j=="form_elements" && Object.prototype.toString.call( this.jsForm[$j] ) === "[object Array]"){
-	      	  	  for (var $e=0; $e<this.jsForm[$j].length; $e++){
+	      	  if ($j=="form_elements" && Object.prototype.toString.call( this.$jsForm[$j] ) === "[object Array]"){
+	      	  	  for (var $e=0; $e<this.$jsForm[$j].length; $e++){
 	      	  	  	  /* seleccionar elementos */
-	      	  	  	  switch (this.jsForm[$j][$e]["type"]){
+	      	  	  	  switch (this.$jsForm[$j][$e]["type"]){
 	      	  	  	  	  case "text":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "number":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "date":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "hidden":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "file":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "password":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "email":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "submit":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "reset":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "radio":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
 	      	  	  	  	  case "checkbox":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
+	      	  	  	  	  case "url":
+	      	  	  	  	  case "tel":
+	      	  	  	  	  case "range":
+	      	  	  	  	  case "search":
+	      	  	  	  	      this.addInput(this.$jsForm[$j][$e]);
 	      	  	  	  	      break;
 	      	  	  	  	  case "button":
-	      	  	  	  	      this.addButton(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
-	      	  	  	  	  case "url":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
-	      	  	  	  	  case "tel":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
-	      	  	  	  	  case "range":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
-	      	  	  	  	      break;
-	      	  	  	  	  case "search":
-	      	  	  	  	      this.addInput(this.jsForm[$j][$e]);
+	      	  	  	  	      this.addButton(this.$jsForm[$j][$e]);
 	      	  	  	  	      break;
 	      	  	  	  	  case "select":
-	      	  	  	  	      this.addSelect(this.jsForm[$j][$e]);
+	      	  	  	  	      this.addSelect(this.$jsForm[$j][$e]);
 	      	  	  	  	      break;
 	      	  	  	  	  default:
-	      	  	  	  	      // tag posibles DIV, FIELDSET
-                              if(!(typeof this.jsForm[$j][$e]["tag"] == "undefined") || !(typeof this.jsForm[$j][$e]["endtag"] == "undefined")){
-                              	  this.setTag(this.jsForm[$j][$e]);
-                              }
-                              // tag posibles DIV, FIELDSET
-                              if(!(typeof this.jsForm[$j][$e]["head"] == "undefined")){
-                                  this.setHead(this.jsForm[$j][$e]);
-                              }
+	      	  	  	  	      try{
+		      	  	  	  	      // tag posibles DIV, FIELDSET
+	                              if(!(typeof this.$jsForm[$j][$e]["tag"] == "undefined") || !(typeof this.$jsForm[$j][$e]["endtag"] == "undefined")){
+	                              	  this.addTag(this.$jsForm[$j][$e]);
+	                              	  if (this.$jsForm[$j][$e]["tag"]=='TBODY'){
+	                              	  	  /* incorporar datos en filas de TABLE */
+	                              	  	  this.addTableRows();
+	                              	  	  break;
+	                              	  }
+	                              }
+	                              // tag posibles DIV, FIELDSET
+	                              if(!(typeof this.$jsForm[$j][$e]["head"] == "undefined")){
+	                              	  /* incorporar TEXTO de cabecera en TABLE */
+	                                  this.addHead(this.$jsForm[$j][$e]);
+	                                  break;
+	                              } 
+                              } catch(err) {
+                          		  console.log(err.message);
+                      		  }  
 	      	  	  	  }
 	      	  	  }
 	      	  }
 	      }
-	      /* comprobar si existen tag en stack */
-  	  	  while (this.$_tag.length>1) {
-  	  	  	  // existe mas de un tag
-  	  	  	  var $next_tag = this.$_tag.pop();
-  	  	  	  var $prev_tag = this.$_tag.pop();
-  	  	  	  $prev_tag.appendChild($next_tag);
-  	  	  	  this.$_tag.push($prev_tag);
-  	  	  } 
-  	  	  if (this.$_tag.length>0){
-  	  	      this.$_form.appendChild(this.$_tag.pop());
-  	  	  }
-
-	      this.$_id.appendChild(this.$_form);
-	  }
+	  }  
       // add Input
 	  addInput($m) {
 	  	  /* tratamiento de label */
@@ -195,9 +193,6 @@ class Schema {
 	  	  var $_input = document.createElement("INPUT");
 	  	  for (var $n in $m){
 	  	  	  switch ($n){
-	  	  	  	  case 'type':
-	      	  	  	  $_input.setAttribute('type',$m['type']);
-	      	  	  	  break;
 	  	  	  	  case 'id':
 	      	  	  	  $_input.setAttribute('id',$m['id']);
 	      	  	  	  if (!($m['type'].toLowerCase()=='radio')){
@@ -210,106 +205,29 @@ class Schema {
 	      	  	  	      $_input.setAttribute('id',$m['name']);
 	      	  	  	  }
 	      	  	  	  break;
-	  	  	  	  case 'disabled':
-	      	  	  	  $_input.setAttribute('disabled',$m['disabled']);
-	      	  	  	  break;
-	      	  	  case 'checked':
-	      	  	  	  $_input.setAttribute('checked',$m['checked']);
-	      	  	  	  break;
-	      	  	  case 'selected':
-	      	  	  	  $_input.setAttribute('selected',$m['selected']);
-	      	  	  	  break;
-	  	  	  	  case 'readonly':
-	      	  	  	  $_input.setAttribute('readonly',$m['readonly']);
-	      	  	  	  break;
-	  	  	  	  case 'required':
-	      	  	  	  $_input.setAttribute('required',$m['required']);
-	      	  	  	  break;
-	  	  	  	  case 'autofocus':
-	      	  	  	  $_input.setAttribute('autofocus',$m['autofocus']);
-	      	  	  	  break;
-	  	  	  	  case 'value':
-	      	  	  	  $_input.setAttribute('value',$m['value']);
-	      	  	  	  break;
-	  	  	  	  case 'size':
-	      	  	  	  $_input.setAttribute('size',$m['size']);
-	      	  	  	  break;
-	  	  	  	  case 'max':
-	      	  	  	  $_input.setAttribute('max',$m['max']);
-	      	  	  	  break;
-				  case 'multiple':
-	      	  	  	  $_input.setAttribute('multiple',$m['multiple']);
-	      	  	  	  break;
-	  	  	  	  case 'min':
-	      	  	  	  $_input.setAttribute('min',$m['min']);
-	      	  	  	  break;
-	  	  	  	  case 'maxlength':
-	      	  	  	  $_input.setAttribute('maxlength',$m['maxlength']);
-	      	  	  	  break;
-	  	  	  	  case 'step':
-	      	  	  	  $_input.setAttribute('step',$m['step']);
-	      	  	  	  break;
-	  	  	  	  case 'pattern':
-	      	  	  	  $_input.setAttribute('pattern',$m['pattern']);
-	      	  	  	  break;
-	  	  	  	  case 'onblur':
-	      	  	  	  $_input.setAttribute('onblur',$m['onblur']);
-	      	  	  	  break;
-	  	  	  	  case 'onsearch':
-	      	  	  	  $_input.setAttribute('onsearch',$m['onsearch']);
-	      	  	  	  break;
-	  	  	  	  case 'onchange':
-	      	  	  	  $_input.setAttribute('onchange',$m['onchange']);
-	      	  	  	  break;
-	  	  	  	  case 'onclick':
-	      	  	  	  $_input.setAttribute('onclick',$m['onclick']);
-	      	  	  	  break;
-	  	  	  	  case 'ondblclick':
-	      	  	  	  $_input.setAttribute('ondblclick',$m['ondblclick']);
-	      	  	  	  break;
-	  	  	  	  case 'onfocus':
-	      	  	  	  $_input.setAttribute('onfocus',$m['onfocus']);
-	      	  	  	  break;
-	  	  	  	  case 'onkeydown':
-	      	  	  	  $_input.setAttribute('onkeydown',$m['onkeydown']);
-	      	  	  	  break;
-	  	  	  	  case 'onkeypress':
-	      	  	  	  $_input.setAttribute('onkeypress',$m['onkeypress']);
-	      	  	  	  break;
-	  	  	  	  case 'onkeyup':
-	      	  	  	  $_input.setAttribute('onkeyup',$m['onkeyup']);
-	      	  	  	  break;
-	  	  	  	  case 'onload':
-	      	  	  	  $_input.setAttribute('onload',$m['onload']);
-	      	  	  	  break;
-	  	  	  	  case 'onmousedown':
-	      	  	  	  $_input.setAttribute('onmousedown',$m['onmousedown']);
-	      	  	  	  break;
-	  	  	  	  case 'onmousemove':
-	      	  	  	  $_input.setAttribute('onmousemove',$m['onmousemove']);
-	      	  	  	  break;
-	  	  	  	  case 'onmouseout':
-	      	  	  	  $_input.setAttribute('onmouseout',$m['onmouseout']);
-	      	  	  	  break;
-	  	  	  	  case 'onmouseover':
-	      	  	  	  $_input.setAttribute('onmouseover',$m['onmouseover']);
-	      	  	  	  break;
-	  	  	  	  case 'onmouseup':
-	      	  	  	  $_input.setAttribute('onmouseup',$m['onmouseup']);
-	      	  	  	  break;
-	  	  	  	  case 'class':
-	      	  	  	  $_input.setAttribute('class',$m['class']);
-	      	  	  	  break;
-	   	  	  	  case 'style':
-	      	  	  	  $_input.setAttribute('style',$m['style']);
-	      	  	  	  break;
-	   	  	  	  case 'placeholder':
-	      	  	  	  $_input.setAttribute('placeholder',$m['placeholder']);
-	      	  	  	  break;
 	      	  	  default:
-	      	  	  	  break;
+                      try {
+                          $_input.setAttribute($n,$m[$n]); 
+                      } catch(err) {
+                          console.log(err.message);
+                      }   
+                      break;
 	  	  	  }
 	  	  }
+	  	  /* incorporar valor al INPUT */
+  	  	  if (!(typeof this.$jsValue == "undefined")){
+  	  	  	  if (Object.prototype.toString.call( this.$jsValue ) === "[object Array]"){
+	  	  	  	  for (var $h=0;$h<this.$jsValue.length;$h++){
+	  	  	  	  	  if (Object.prototype.toString.call( this.$jsValue[$h] ) === "[object Object]"){
+		  	  	  	  	  if ($_input['id']==this.$jsValue[$h]['id']){
+		  	  	  	  	      for (var $i in this.$jsValue[$h]){
+   		  	  	  	  	      	  $_input[$i]=this.$jsValue[$h][$i];
+		  	  	  	  	      }	 
+		  	  	  	  	  }
+		  	  	  	  }
+	  	  	  	  }
+	  	  	  }
+	      }
 	  	  /* asociar a un subnodo o form */
   	  	  if (this.$_tag.length>0){
   	      	  this.$_tag[this.$_tag.length-1].appendChild($_input);
@@ -348,59 +266,19 @@ class Schema {
 	      	  	  	  $_button.setAttribute('id',$m['name']);
 	      	  	  	  $_button.setAttribute('name',$m['name']);
 	      	  	  	  break;
-	  	  	  	  case 'disabled':
-	      	  	  	  $_button.setAttribute('disabled',$m['disabled']);
-	      	  	  	  break;
-	  	  	  	  case 'value':
-	  	  	  	      $_button.appendChild(document.createTextNode($m['value']));
-	      	  	  	  break;
-	  	  	  	  case 'href':
-	      	  	  	  $_button.setAttribute('href',$m['href']);
-	      	  	  	  break;
-	  	  	  	  case 'onclick':
-	      	  	  	  $_button.setAttribute('onclick',$m['onclick']);
-	      	  	  	  break;
-	  	  	  	  case 'ondblclick':
-	      	  	  	  $_button.setAttribute('ondblclick',$m['ondblclick']);
-	      	  	  	  break;
-	  	  	  	  case 'onfocus':
-	      	  	  	  $_button.setAttribute('onfocus',$m['onfocus']);
-	      	  	  	  break;
-	  	  	  	  case 'onkeydown':
-	      	  	  	  $_button.setAttribute('onkeydown',$m['onkeydown']);
-	      	  	  	  break;
-	  	  	  	  case 'onkeypress':
-	      	  	  	  $_button.setAttribute('onkeypress',$m['onkeypress']);
-	      	  	  	  break;
-	  	  	  	  case 'onkeyup':
-	      	  	  	  $_button.setAttribute('onkeyup',$m['onkeyup']);
-	      	  	  	  break;
-	  	  	  	  case 'onload':
-	      	  	  	  $_button.setAttribute('onload',$m['onload']);
-	      	  	  	  break;
-	  	  	  	  case 'onmousedown':
-	      	  	  	  $_button.setAttribute('onmousedown',$m['onmousedown']);
-	      	  	  	  break;
-	  	  	  	  case 'onmousemove':
-	      	  	  	  $_button.setAttribute('onmousemove',$m['onmousemove']);
-	      	  	  	  break;
-	  	  	  	  case 'onmouseout':
-	      	  	  	  $_button.setAttribute('onmouseout',$m['onmouseout']);
-	      	  	  	  break;
-	  	  	  	  case 'onmouseover':
-	      	  	  	  $_button.setAttribute('onmouseover',$m['onmouseover']);
-	      	  	  	  break;
-	  	  	  	  case 'onmouseup':
-	      	  	  	  $_button.setAttribute('onmouseup',$m['onmouseup']);
-	      	  	  	  break;
-	  	  	  	  case 'class':
-	      	  	  	  $_button.setAttribute('class',$m['class']);
-	      	  	  	  break;
-	   	  	  	  case 'style':
-	      	  	  	  $_button.setAttribute('style',$m['style']);
+	      	  	  case 'value':
+                      $_button.appendChild(document.createTextNode($m['value']));
+                      break;
+	      	  	  case 'icon':
+	      	  	  	  $_button.innerHTML = "<i class='"+$m['icon']+"'></i>";
 	      	  	  	  break;
 	      	  	  default:
-	      	  	  	  break;
+                      try {
+                          $_button.setAttribute($n,$m[$n]); 
+                      } catch(err) {
+                          console.log(err.message);
+                      }   
+                      break;
 	  	  	  }
 	  	  }
 	  	  /* asociar a un subnodo o form */
@@ -419,65 +297,138 @@ class Schema {
 			<option value="value3">Value 3</option>
 		  </select>
           */
-	  	  if(!(typeof $m["label"] == "undefined")){
-	  	      var $_label = document.createElement("LABEL");
-	          $_label.innerHTML = ($m["label"]);
-	  	      $_label.setAttribute("for",$m["id"]);
-	  	      if (!(typeof $m["label_style"] == "undefined")){
-                  $_label.setAttribute('style',$m["label_style"]); 
-	  	      }
-	  	      if (!(typeof $m["label_class"] == "undefined")){
-                   $_label.setAttribute('class',$m["label_class"]);
-	  	      }
+          try{
+		  	  if(!(typeof $m["label"] == "undefined")){
+		  	      var $_label = document.createElement("LABEL");
+		          $_label.innerHTML = ($m["label"]);
+		  	      $_label.setAttribute("for",$m["id"]);
+		  	      if (!(typeof $m["label_style"] == "undefined")){
+	                  $_label.setAttribute('style',$m["label_style"]); 
+		  	      }
+		  	      if (!(typeof $m["label_class"] == "undefined")){
+	                   $_label.setAttribute('class',$m["label_class"]);
+		  	      }
+		  	      if (this.$_tag.length>0){
+		  	      	  this.$_tag[this.$_tag.length-1].appendChild($_label);
+		  	      } else {
+		  	          this.$_form.appendChild($_label);
+		  	      } 
+		  	  }
+		  	  var $_select = document.createElement("SELECT");
+		  	  for (var $n in $m){
+		  	  	  switch ($n){
+		  	  	  	  case 'id':
+		      	  	  	  $_select.setAttribute('id',$m['id']);
+		      	  	  	  $_select.setAttribute('name',$m['id']);
+		      	  	  	  break;
+		  	  	  	  case 'name':
+		      	  	  	  $_select.setAttribute('id',$m['name']);
+		      	  	  	  $_select.setAttribute('name',$m['name']);
+		      	  	  	  break;
+		      	  	  case 'options':
+	                    /* incorporar opciones de SELECT si desea incluir valores                                                  */
+	                    /* 'options' puede contener un array de diccionario o un string                                            */
+	                    /* por ejemplo: [{"text":"ES","value":"España"},{"text":"FR","value":"FRANCIA","selected":"selected"}]     */
+	                    /*              o "/v1/country"                                                                            */
+	                    if (typeof $m[$n] === 'string'){
+	                       /* '/v1/country|{"value":"ES"}' y con '/v1/country|{"value":"ES","readonly":"readonly"}'                */
+	                       var $_data = '';
+	                       var $_url = '';
+	                       if ($m[$n].split('|').length>1){
+	                          $_url = $m[$n].split('|')[0];
+	                          $_data = JSON.stringify(JSON.parse($m[$n].split('|')[1]));
+	                       } else {
+	                          $_url = $m[$n];
+	                       }                                                                               
+	                       var $xhr_values = Object.create({'Data':$_data,'Url':$_url,'Return':OnStateChange,'Type':false,'Content_Type':'text/html','Accept':'application/json'});
+	                       postData($xhr_values);
+	                       $m[$n] = JSON.parse($xhr.responseText);
+	                    }
+		      	  	      if (Object.prototype.toString.call( $m[$n] ) === "[object Array]"){
+		      	  	      	  /* [{'option':'','value':'','selected':'selected'},{...}]  */
+		      	  	      	  for (var $h=0;$h<$m[$n].length;$h++){
+		      	  	      	  	  if (Object.prototype.toString.call( $m[$n][$h] ) === "[object Object]"){
+	                                  var $opt = document.createElement('OPTION');
+	                                  if(!(typeof $m[$n][$h]['value'] == 'undefined')){
+	                                      $opt.value =  $m[$n][$h]['value'];
+	                                  }
+	                                  if(!(typeof $m[$n][$h]['text'] == 'undefined')){
+	                                      $opt.text = $m[$n][$h]['text'];
+	                                  }
+	                                  if(!(typeof $m[$n][$h]['selected'] == 'undefined')){
+	                                      $opt.setAttribute("selected", "selected");
+	                                  }
+	                                  $_select.appendChild($opt);
+		      	  	      	  	  }
+		      	  	      	  }
+		      	  	      }
+		      	  	      break;
+		      	  	  default:
+	                      try {
+	                          $_select.setAttribute($n,$m[$n]); 
+	                      } catch(err) {
+	                          console.log(err.message);
+	                      }   
+	                      break;
+		  	  	  }
+		  	  }
+		  	  /* incorporar opciones de SELECT si se definen como valores */
+		  	  if (!(typeof this.$jsValue == "undefined")){
+	  	  	  	  if (Object.prototype.toString.call( this.$jsValue ) === "[object Array]"){
+		  	  	  	  for (var $h=0;$h<this.$jsValue.length;$h++){
+		  	  	  	  	  if (Object.prototype.toString.call( this.$jsValue[$h] ) === "[object Object]"){
+			  	  	  	  	  if ($m['id']==this.$jsValue[$h]['id']){
+			  	  	  	  	  	  if ('options' in this.$jsValue[$h]){
+									  /* options puede ser un array de diccionarios o un string */
+									  if (typeof this.$jsValue[$h]['options'] === 'string'){
+									      var $_data = '';
+									      var $_url = '';
+									      if (this.$jsValue[$h]['options'].split('|').length>1){
+									          $_url = this.$jsValue[$h]['options'].split('|')[0];
+									          $_data = JSON.stringify(JSON.parse(this.$jsValue[$h]['options'].split('|')[1]));
+									      } else {
+									          $_url = this.$jsValue[$h]['options'];
+									      }
+									      var $xhr_values = Object.create({'Data':$_data,'Url':$_url,'Return':OnStateChange,'Type':false,'Content_Type':'text/html','Accept':'application/json'});
+									      postData($xhr_values);
+									      this.$jsValue[$h]['options'] = JSON.parse($xhr.responseText);
+									  }
+					                  for (var $j=0;$j<this.$jsValue[$h]['options'].length;$j++){
+						  	              if (Object.prototype.toString.call( this.$jsValue[$h]['options'][$j] ) === "[object Object]"){
+											  var $opt = document.createElement('OPTION');
+										      if(!(typeof this.$jsValue[$h]['options'][$j]['value'] == 'undefined')){
+											      $opt.value =  this.$jsValue[$h]['options'][$j]['value'];
+											  }
+											  if(!(typeof this.$jsValue[$h]['options'][$j]['text'] == 'undefined')){
+											      $opt.text =this.$jsValue[$h]['options'][$j]['text'];
+											  }
+											  if(!(typeof this.$jsValue[$h]['options'][$j]['selected'] == 'undefined')){
+											      $opt.setAttribute("selected", "selected");
+											  }
+											  $_select.appendChild($opt);
+										  }
+									  }
+								  }
+							  }
+						  }
+					  }
+				  }
+		      }
+		  	  /* asociar a un subnodo o form */
 	  	      if (this.$_tag.length>0){
-	  	      	  this.$_tag[this.$_tag.length-1].appendChild($_label);
+	  	      	  this.$_tag[this.$_tag.length-1].appendChild($_select);
 	  	      } else {
-	  	          this.$_form.appendChild($_label);
+	  	          this.$_form.appendChild($_select);
 	  	      } 
-	  	  }
-	  	  var $_select = document.createElement("SELECT");
-	  	  for (var $n in $m){
-	  	  	  switch ($n){
-	  	  	  	  case 'id':
-	      	  	  	  $_select.setAttribute('id',$m['id']);
-	      	  	  	  $_select.setAttribute('name',$m['id']);
-	      	  	  	  break;
-	  	  	  	  case 'name':
-	      	  	  	  $_select.setAttribute('id',$m['name']);
-	      	  	  	  $_select.setAttribute('name',$m['name']);
-	      	  	  	  break;
-	  	  	  	  case 'disabled':
-	      	  	  	  $_select.setAttribute('disabled',$m['disabled']);
-	      	  	  	  break;
-	  	  	  	  case 'blur':
-	      	  	  	  $_select.setAttribute('blur',$m['blur']);
-	      	  	  	  break;
-	  	  	  	  case 'onfocus':
-	      	  	  	  $_select.setAttribute('onfocus',$m['onfocus']);
-	      	  	  	  break;
-	  	  	  	  case 'class':
-	      	  	  	  $_select.setAttribute('class',$m['class']);
-	      	  	  	  break;
-	   	  	  	  case 'style':
-	      	  	  	  $_select.setAttribute('style',$m['style']);
-	      	  	  	  break;
-	      	  	  default:
-		          	  break;
-	  	  	  }
-	  	  }
-	  	  /* asociar a un subnodo o form */
-  	      if (this.$_tag.length>0){
-  	      	  this.$_tag[this.$_tag.length-1].appendChild($_select);
-  	      } else {
-  	          this.$_form.appendChild($_select);
-  	      } 
+          } catch(err) {
+              console.log(err.toString());
+          } 
 	  }
 	  /* crear y cerrar nodos (DIV,P,A,FIELDSET,...) */ 
-	  setTag($m) {
+	  addTag($m) {
 	  	  // incluye etiquetas en FORM como DIV, P, A, SECTION,...
 	  	  if(!(typeof $m["tag"] == "undefined")){
 	  	  	  var $tag = document.createElement($m["tag"]);
-	          
 	          for (var $n in $m){
 		  	  	  switch ($n){
 		  	  	  	  case 'id':
@@ -491,17 +442,13 @@ class Schema {
 		      	  	  case 'title':
 		      	  	      $tag.innerHTML = ($m["title"]);
 		      	  	      break;
-		  	  	  	  case 'disabled':
-		      	  	  	  $tag.setAttribute('disabled',$m['disabled']);
-		      	  	  	  break;
-		  	  	  	  case 'class':
-		      	  	  	  $tag.setAttribute('class',$m['class']);
-		      	  	  	  break;
-		   	  	  	  case 'style':
-		      	  	  	  $tag.setAttribute('style',$m['style']);
-		      	  	  	  break;
 		      	  	  default:
-			          	  break;
+	                      try {
+	                          $tag.setAttribute($n,$m[$n]); 
+	                      } catch(err) {
+	                          console.log(err.message);
+	                      }   
+	                      break;
 		  	  	  }
 		  	  }
 		  	  this.$_tag.push($tag);
@@ -510,39 +457,129 @@ class Schema {
 	  	  if(!(typeof $m["endtag"] == "undefined")){
 	  	  	  if (this.$_tag.length>0) {
 	  	  	  	  if (this.$_tag.length>1) {
-	  	  	  	  	  // existe mas de un tag
+	  	  	  	  	  /* existe mas de un tag, el último tag se incorpora al anterior en orden */
 	  	  	  	  	  var $next_tag = this.$_tag.pop();
-	  	  	  	  	  var $prev_tag = this.$_tag.pop();
-	  	  	  	  	  $prev_tag.appendChild($next_tag);
-	  	  	  	  	  this.$_tag.push($prev_tag);
+	  	  	  	  	  this.$_tag[this.$_tag.length-1].appendChild($next_tag);
 	  	  	  	  } else {
 	  	  	          this.$_form.appendChild(this.$_tag.pop());
 	  	  	      }
 	  	  	  }    
 	  	  }
 	  }
-	         
-
 	  /* incorporar cabecera de Table */ 
-	  setHead($m) {
-	  	  var $td = document.createElement("TD");
-	  	  var $head = document.createTextNode($m['head']);
-	  	  $td.appendChild($head);
-	  	  if (this.$_tag.length>0){
-	                  var last_tag = this.$_tag.pop();
-	                  last_tag.appendChild($td);
-	                  this.$_tag.push(last_tag);
-	      }
+	  addHead($m) {
+	      var $td = document.createElement("TD");
+          var $head = document.createTextNode($m['head']);
+          $td.appendChild($head);
+          /* incorporar atributos a head */
+          if(!(typeof $m["class"] == "undefined")){
+              $td.setAttribute('class',$m['class']);
+          }
+          if(!(typeof $m["style"] == "undefined")){
+              $td.setAttribute('style',$m['style']);
+          }
+          if(!(typeof $m["onclick"] == "undefined")){
+              $td.setAttribute('onclick',$m['onclick']);
+          } 
+          /* incorporar cabecera a ultimo tag */             
+          if (this.$_tag.length>0){
+              this.$_tag[this.$_tag.length-1].appendChild($td);
+          }
 	  }
+	  /* incorporar linea de Table */
+	  addTableRows(){
+	  	  if (this.$_tag[this.$_tag.length-1].nodeName == "TBODY"){
+  	  	  	  // insertar input
+  	  	  	  if (Object.prototype.toString.call( this.$jsValue ) === "[object Array]"){
+  	  	  	  	  /* recorrer array de filas de valor */
+                  for (var $h=0;$h<this.$jsValue.length;$h++){
+                  	  if (Object.prototype.toString.call( this.$jsValue[$h] ) === "[object Array]"){
+                          this.addTag({'tag':'TR'});
+                          /* seleccionar definicion de elemento registro como 'field'*/
+                          for (var $j=0;$j<this.$jsForm['form_elements'].length;$j++){
+                              if(!(typeof this.$jsForm['form_elements'][$j]['field'] == "undefined")){
+                                  /* seleccionar columna de valor */
+                                  for (var $i=0;$i<this.$jsValue[$h].length;$i++){
+                                      /* comprobar 'id' definicion de registro e 'id' de valor */
+                                      if (this.$jsValue[$h][$i]['id']==this.$jsForm['form_elements'][$j]['field']['id']){
+                                          var $inputField = clone(this.$jsForm['form_elements'][$j]['field']);
+                                          /* actualizar definicion de registro con datos de valor */
+                                          for (var $k in this.$jsValue[$h][$i]){
+                                              $inputField[$k] = this.$jsValue[$h][$i][$k];
+                                          }
+                                          /* mostrar valor en fila */
+                                          this.addTag({'tag':'TD'});
+                                          if ($inputField['type']=='select'){
+                                              this.addSelect($inputField);
+                                          } else if ($inputField['type']=='button'){
+                                              this.addButton($inputField);
+                                          } else {
+                                              this.addInput($inputField);
+                                          }
+                                          this.addTag({'endtag':'/TD'});
+                                          /* out of this.$jsValue for */
+                                          break;
+                                      }
+                                  }      
+                              }
+                          }
+                          this.addTag({'endtag':'/TR'});
+                      }
+                  }
+  	  	  	  }
+	  	  }
+      }
+      /* form sin valores */
+      resetForm(){
+   	  	  this.$jsValue = [];
+   	  	  this.$_tag = [];
+  	      this.createForm();
+  	      this.$_form.reset();
+      }
+      /* actualizar form con nuevos valores */
+      setFormValue(_jsOtherValue){
+      	  if (!(typeof _jsOtherValue == "undefined")){
+      	  	  this.$jsValue = _jsOtherValue;
+      	  	  this.$_tag = [];
+      	  	  this.removeForm();
+	  	      this.createForm();
+      	  }
+      }
+      /* eliminar form */
+      removeForm(){
+          if (!(typeof this.$_id == "undefined")){
+          	  this.$_id.removeChild(document.getElementById(this.$jsForm['id']));
+          	  /* eliminar objeto form*/
+          	  this.$_form == null;
+          	  delete this.$_form;
+          }
+      }
+	  /* listado de atributos de un objeto */
+	  recorrerObjeto($objeto){
+		  var $respuesta="";
+		  for (var $i in $objeto){
+		      $respuesta+=$i+": "+$objeto[i];
+		  }
+		  console.log($respuesta);
+	  }
+}
 
- 
-    recorrerObjeto(objeto)
-    {
-        var respuesta="";
-        for (var i in objeto)
-        {
-            respuesta+=i+": "+objeto[i];
+function clone($obj) {
+	/* clone an object */
+	if ($obj === null || !(typeof($obj) == 'object') || 'isActiveClone' in $obj){
+	    return $obj;
+	}
+	if ($obj instanceof Date){
+	    var $temp = new $obj.constructor(); //or new Date(obj);
+	} else {
+	    var $temp = $obj.constructor();
+	}
+    for (var $key in $obj) {
+        if (Object.prototype.hasOwnProperty.call($obj, $key)) {
+            $obj['isActiveClone'] = null;
+            $temp[$key] = clone($obj[$key]);
+            delete $obj['isActiveClone'];
         }
-       console.log(respuesta);
     }
+    return $temp;
 }

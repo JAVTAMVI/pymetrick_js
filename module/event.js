@@ -1,3 +1,4 @@
+
 /* Asociar eventos a elementos y ejecutar una funcion */
 function addEvent($e,nomevento,funcion,captura) {
   /*eventos posibles */

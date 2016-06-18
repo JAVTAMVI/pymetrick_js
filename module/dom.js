@@ -1,9 +1,10 @@
-// FUNCIONES LECTURA DOM **********************************************************************************************
 
-/* Lectura de valores de META por NAME
-   obtener el valor content de las etiquetas meta a partir del name :
-   getMetaContentByName("authenticity-token")
-*/
+// FUNCIONES LECTURA DOM 
+
+// Lectura de valores de META por NAME
+// obtener el valor content de las etiquetas meta a partir del name :
+// getMetaContentByName("authenticity-token")
+//
 
 function getMetaContentByName(name){
     var $x = document.getElementsByTagName("META");

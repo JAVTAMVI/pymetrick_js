@@ -1,3 +1,4 @@
+
 /* funcion para sustituir a document.ready de JQuery */
 // Como implementarla
 //pass a function reference

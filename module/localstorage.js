@@ -1,3 +1,4 @@
+
 /*funciones de localStorage*/
 function localStorageSupported() {
     console.log("window.localStorage: "+window.localStorage);
