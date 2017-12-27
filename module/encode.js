@@ -12,7 +12,10 @@ var Base64 = {
 		var $output = "";
 		var $chr1, $chr2, $chr3, $enc1, $enc2, $enc3, $enc4;
 		var $i = 0;
-		var $str = Base64._utf8_encode(string);
+                var $str = '';
+
+		$str = Base64._utf8_encode(string);
+
 		while ($i < $str.length) {
 
 			$chr1 = $str.charCodeAt($i++);
@@ -43,8 +46,9 @@ var Base64 = {
 		var $chr1, $chr2, $chr3;
 		var $enc1, $enc2, $enc3, $enc4;
 		var $i = 0;
+                var $str = '';
 
-		var $str = string.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+		$str = string.replace(/[^A-Za-z0-9\+\/\=]/g, "");
 
 		while ($i < $str.length) {
 
@@ -76,10 +80,12 @@ var Base64 = {
 	_utf8_encode : function (string) {
 		var $str = string.replace(/\r\n/g,"\n");
 		var $utftext = "";
+                var $c = 0;
+
 
 		for (var $n = 0; $n < $str.length; $n++) {
 
-			var $c = $str.charCodeAt($n);
+			$c = $str.charCodeAt($n);
 
 			if ($c < 128) {
 				$utftext += String.fromCharCode($c);
@@ -102,8 +108,9 @@ var Base64 = {
 		var $str = "";
 		var $i = 0;
 		var $c = 0;
-                var $c1 = 0;
                 var $c2 = 0;
+                var $c3 = 0;
+
 
 		while ( $i < utftext.length ) {
 

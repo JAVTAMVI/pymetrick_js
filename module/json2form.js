@@ -89,7 +89,12 @@ class jsonForm {
 			                      try {
 			                          this.$_form.setAttribute($j,this.$jsForm[$j]); 
 			                      } catch(err) {
-			                          console.log(err.message);
+			                          console.log(err.name); 
+                                                  console.log(err.message);    
+                                                  console.log(err.fileName);   
+                                                  console.log(err.stack);
+                                                  console.log(err.lineNumber); 
+                                                  console.log(err.line);
 			                      }   
 			                      break;
 			          	  }
@@ -162,8 +167,13 @@ class jsonForm {
 	                                  break;
 	                              } 
                               } catch(err) {
-                          		  console.log(err.message);
-                      		  }  
+                          	  console.log(err.name); 
+                                  console.log(err.message);    
+                                  console.log(err.fileName);   
+                                  console.log(err.stack);
+                                  console.log(err.lineNumber); 
+                                  console.log(err.line);
+                      	      }  
 	      	  	  	  }
 	      	  	  }
 	      	  }
@@ -209,7 +219,12 @@ class jsonForm {
                       try {
                           $_input.setAttribute($n,$m[$n]); 
                       } catch(err) {
-                          console.log(err.message);
+                          console.log(err.name); 
+                          console.log(err.message);    
+                          console.log(err.fileName);   
+                          console.log(err.stack);
+                          console.log(err.lineNumber); 
+                          console.log(err.line);
                       }   
                       break;
 	  	  	  }
@@ -276,7 +291,12 @@ class jsonForm {
                       try {
                           $_button.setAttribute($n,$m[$n]); 
                       } catch(err) {
-                          console.log(err.message);
+                          console.log(err.name); 
+                          console.log(err.message);    
+                          console.log(err.fileName);   
+                          console.log(err.stack);
+                          console.log(err.lineNumber); 
+                          console.log(err.line);
                       }   
                       break;
 	  	  	  }
@@ -340,8 +360,8 @@ class jsonForm {
 	                       } else {
 	                          $_url = $m[$n];
 	                       }                                                                               
-	                       var $xhr_values = Object.create({'Data':$_data,'Url':$_url,'Return':OnStateChange,'Type':false,'Content_Type':'text/html','Accept':'application/json'});
-	                       postData($xhr_values);
+	                       var $xhr_values = {'method':'POST','data':$_data,'url':$_url,'return_function':OnStateChange,'async':false,'content_type':'text/html','accept':'application/json','message':[]};
+	                       xData($xhr_values);
 	                       $m[$n] = JSON.parse($xhr.responseText);
 	                    }
 		      	  	      if (Object.prototype.toString.call( $m[$n] ) === "[object Array]"){
@@ -367,10 +387,14 @@ class jsonForm {
 	                      try {
 	                          $_select.setAttribute($n,$m[$n]); 
 	                      } catch(err) {
-	                          console.log(err.message);
-	                      }   
-	                      break;
-		  	  	  }
+	                          console.log(err.name); 
+                                  console.log(err.message);    
+                                  console.log(err.fileName);   
+                                  console.log(err.stack);
+                                  console.log(err.lineNumber); 
+                                  console.log(err.line);	                      }   
+	                          break;
+		  	      }
 		  	  }
 		  	  /* incorporar opciones de SELECT si se definen como valores */
 		  	  if (!(typeof this.$jsValue == "undefined")){
@@ -389,8 +413,8 @@ class jsonForm {
 									      } else {
 									          $_url = this.$jsValue[$h]['options'];
 									      }
-									      var $xhr_values = Object.create({'Data':$_data,'Url':$_url,'Return':OnStateChange,'Type':false,'Content_Type':'text/html','Accept':'application/json'});
-									      postData($xhr_values);
+									      var $xhr_values = {'method':'POST','data':$_data,'url':$_url,'return_function':OnStateChange,'async':false,'content_type':'text/html','accept':'application/json','message':[]};
+									      xData($xhr_values);
 									      this.$jsValue[$h]['options'] = JSON.parse($xhr.responseText);
 									  }
 					                  for (var $j=0;$j<this.$jsValue[$h]['options'].length;$j++){
@@ -421,7 +445,12 @@ class jsonForm {
 	  	          this.$_form.appendChild($_select);
 	  	      } 
           } catch(err) {
-              console.log(err.toString());
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           } 
 	  }
 	  /* crear y cerrar nodos (DIV,P,A,FIELDSET,...) */ 
@@ -446,7 +475,12 @@ class jsonForm {
 	                      try {
 	                          $tag.setAttribute($n,$m[$n]); 
 	                      } catch(err) {
-	                          console.log(err.message);
+	                          console.log(err.name); 
+                                  console.log(err.message);    
+                                  console.log(err.fileName);   
+                                  console.log(err.stack);
+                                  console.log(err.lineNumber); 
+                                  console.log(err.line);
 	                      }   
 	                      break;
 		  	  	  }

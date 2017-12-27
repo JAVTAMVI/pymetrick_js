@@ -209,8 +209,13 @@ function _serialTableJSON(tableID){
        }
        return JSON.stringify($f);
 
-   } catch (e) {
-       console.log(e);
+   } catch(err) {
+        console.log(err.name); 
+        console.log(err.message);    
+        console.log(err.fileName);   
+        console.log(err.stack);
+        console.log(err.lineNumber); 
+        console.log(err.line);
    }
 }
 /* Traducir elementos serializados como string URL e insertarlos en valores */

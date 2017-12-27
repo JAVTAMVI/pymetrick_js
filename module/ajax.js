@@ -1,37 +1,28 @@
 
 /* Implementacion de XMLHTTPRequest para comunicacion AJAX */
+var $xdr = false;
 function getXMLHTTPRequest(){
-    var $xmlHttp = false;
-    if (!$xmlHttp && typeof XMLHTTPRequest === "undefined") {
-        try{
-	         $xmlHttp = new XMLHttpRequest();
-        } catch (e) {
-           $xmlHttp = false;
-        }
+    var global = typeof window != 'undefined' ? window:self;
+    if (typeof global.XMLHttpRequest != 'undefined'){
+        try {
+            return new global.XMLHttpRequest();
+        } catch(err) {console.log(err.message);}
     }
-    if (!$xmlHttp && window.createRequest) {
-        try{
-            $xmlHttp = new window.createRequest();
-        } catch (e) {
-            $xmlHttp = false;
-        }
+    if(global.XDomainRequest){
+        try {
+            $xdr = true;
+            console.log('XDomainRequest');
+            return new XDomainRequest();
+        } catch(err) {console.log(err.message);}
     }
-    if (!$xmlHttp && window.ActiveXObject) {
-        var $ieXMLHttpVersions = ['MSXML2.XMLHTTP.6.0','MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
-        for (var i = 0; i < $ieXMLHttpVersions.length; i++) {
-            try {
-                $xmlHttp = new ActiveXObject($ieXMLHttpVersions[i]);
-            } catch (e) {
-                $xmlHttp = false;
-            }
-        }
+    var $ieXMLHttpVersions = ['MSXML2.XMLHTTP.6.0','MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
+    for (var i = 0; i < $ieXMLHttpVersions.length; i++) {
+        try {
+            console.log($ieXMLHttpVersions[i]);
+            return new ActiveXObject($ieXMLHttpVersions[i]);
+        } catch(err) {console.log(err.message);}
     }
-    if (!$xmlHttp) {
-        alert ('IMPOSIBLE crear objeto AJAX !!!');
-        return false;
-    } else {
-        return $xmlHttp;
-    }
+    return false;
 }
 var $xhr = getXMLHTTPRequest();
 var $editLink = '';
@@ -43,164 +34,212 @@ function getEditLink(Link) {
 
 var $message_list = [];
 
-function getData($xhr_values) {
-    /*var xhr_values = Object.create({'data':,'url':,'f_return':,'com_type':,'content-type':,'accept':,'message':}) */
-    if ($xhr_values.Return==null || $xhr_values.Return === undefined) {
-        $xhr_values.Return = OnStateChange;
+function xData($opts) {
+    /*
+      $opts.method = "GET","POST","PUT","DELETE","OPTIONS","HEAD"
+      $opts.url 
+      $opts.async = true | false => asynchronous | synchronous
+      $opts.content_type
+      $opts.accept
+      $opts.return_function = function to data receive | OnStateChange
+      $opts.message = message for true | message error
+      $xhr.responseType = "", "arraybuffer", "blob", "document", "json", "text" (default)
+    */
+    try {
+    var $methods = ["GET","POST","PUT","DELETE","OPTIONS","HEAD"];
+    if (!$options.hasOwnProperty('method')){
+        $options.method = "GET";
     }
-    if ($xhr_values.Message !== undefined && $xhr_values.Message !== null) {
-        $message_list = $xhr_values.Message.split("|");
+    var successCallback = $options.success || function(){};
+    var failureCallback = $options.failure || function(){};
+    $options.user = $options.user || '';
+    $options.password = $options.password || '';
+    $options.withCredentials = $options.withCredentials || false;
+    if ($options.method !== null && $options.method !== undefined) {
+        if ($methods.indexOf($options.method.toUpperCase())>-1) {
+            if (!$options.hasOwnProperty('return_function')) {
+                $options.return_function = OnStateChange;
+            }
+            if ($options.hasOwnProperty('message')) {
+                $message_list = $options.message;
+            } else {
+                $message_list = [];
+            }
+            if (!$options.hasOwnProperty('async')){
+                $options.async = true;
+            }
+            if (isFirefox){
+                /* only in firefox async=false */
+                $options.async = false;
+            }
+            if (!$options.hasOwnProperty('data')){
+                return false;
+            } else {
+                if ($options.method == "GET") {
+                    var url = $options.url+'?_=' + new Date().getTime() +'&'+ $options.data;
+                    if ($xdr){
+                        $xhr.open($options.method, url);
+                    } else {
+                        $xhr.open($options.method, url, $options.async, $options.user, $options.password);
+                    }
+                } else {
+                    if ($xdr){
+                        $xhr.open($options.method, $options.url);
+                    } else {
+                        $xhr.open($options.method, $options.url, $options.async, $options.user, $options.password);
+                    }
+                }
+                if ( "withCredentials" in $xhr && $options.async){
+                    $xhr.withCredentials = $options.withCredentials;
+                }
+                if ("onload" in $xhr){
+                    $xhr.onload = $options.return_function;
+                    $xhr.onerror = function(err){
+                        console.log(err.name); 
+                        console.log(err.message);    
+                        console.log(err.fileName);   
+                        console.log(err.stack);
+                        console.log(err.lineNumber); 
+                        console.log(err.line);       
+                    };
+                } else {
+                    $xhr.onreadystatechange = $options.return_function;
+                }
+                if ("timeout" in $xhr && $options.async){
+                    $xhr.ontimeout = function () {
+                        console.error("TimeOut!!!");
+                        $xhr.abort();
+                        return;
+                    };
+                    if ($options.hasOwnProperty('timeout')) {
+                        $xhr.timeout = $options.timeout;
+                    } else {
+                        $xhr.timeout = 30000;
+                    }
+                }
+                if ("Access-Control-Allow-Origin" in $xhr){
+                    $xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
+                }
+                if ("Access-Control-Request-Method" in $xhr){
+                    $xhr.setRequestHeader("Access-Control-Request-Method", $options.method);
+                }
+                if ("Access-Control-Request-Headers" in $xhr){
+                    $xhr.setRequestHeader("Access-Control-Request-Headers", 'X-Requested-With');
+                }
+                var $headers = [];
+                $headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0';
+                $headers['Pragma'] = 'no-cache';
+                $headers['X-Requested-With'] = 'xmlhttprequest';
+                $headers['Content-Type'] = $options.content_type;
+                /* Set headers */
+		for ( var i in $headers ) {
+		    $xhr.setRequestHeader( i, $headers[ i ] );
+                }
+                if ($options.method == "GET" || $options.method == "HEAD") {
+                    $xhr.send(null);
+                } else {
+                    $xhr.send($options.data);
+                }
+            }
+        } else {
+            console.log("ERROR method "+ $options.method +" not allowed, only [GET,POST,PUT,DELETE]");
+        }
     } else {
-        $message_list = [];
+        console.log("ERROR no method [GET,POST,PUT,DELETE]");
     }
-    if ($xhr_values.Type === undefined || $xhr_values.Type == null){
-        $xhr_values.Type = true;
-    } 
-    if ($xhr_values.Data === undefined){
-        return false;
-    } else {
-    	var miAleatorio = new Date().getTime();
-    	var url = $xhr_values.Url+'?' + $xhr_values.Data;
-        $xhr.open("GET", url, $xhr_values.Type);
-        $xhr.setRequestHeader('Content-Type', $xhr_values.Content_Type+';charset=UTF-8');
-        $xhr.setRequestHeader('Accept',$xhr_values.Accept);
-        $xhr.setRequestHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0');
-        $xhr.setRequestHeader('Pragma', 'no-cache');
-        $xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        $xhr.onreadystatechange = $xhr_values.Return;
-        $xhr.send(null);
+    } catch(err) {
+        console.log(err.name); 
+        console.log(err.message);    
+        console.log(err.fileName);   
+        console.log(err.stack);
+        console.log(err.lineNumber); 
+        console.log(err.line);       
     }
+    return false;
 }
-/* Envio de informacion con method POST */
-function postData($xhr_values) {
-    if ($xhr_values.Return==null || $xhr_values.Return === undefined) {
-        $xhr_values.Return = OnStateChange;
-    }
-    if ($xhr_values.Message !== undefined && $xhr_values.Message !== null) {
-        $message_list = $xhr_values.Message.split("|");
-    } else {
-        $message_list = [];
-    }
-    if ($xhr_values.Type === undefined || $xhr_values.Type == null){
-        $xhr_values.Type = true;
-    } 
-    if ($xhr_values.Data === undefined){
-        return false;
-    } else {
-        var miAleatorio = new Date().getTime();
-        $xhr.open("POST", $xhr_values.Url , $xhr_values.Type);
-        $xhr.setRequestHeader('Content-Type', $xhr_values.Content_Type+';charset=UTF-8');
-        $xhr.setRequestHeader('Accept',$xhr_values.Accept);
-        $xhr.setRequestHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0');
-        $xhr.setRequestHeader('Pragma', 'no-cache');
-        $xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        $xhr.onreadystatechange = $xhr_values.Return;
-        $xhr.send($xhr_values.Data);
-    }
-}
-/* Envio de informacion con method PUT */
-function putData($xhr_values) {
-    if ($xhr_values.Return==null || $xhr_values.Return === undefined) {
-        $xhr_values.Return = OnStateChange;
-    }
-    if ($xhr_values.Message !== undefined && $xhr_values.Message !== null) {
-        $message_list = $xhr_values.Message.split("|");
-    } else {
-        $message_list = [];
-    }
-    if ($xhr_values.Type === undefined || $xhr_values.Type == null){
-        $xhr_values.Type = true;
-    } 
-    if ($xhr_values.Data === undefined){
-        return false;
-    } else {
-        var miAleatorio = new Date().getTime();
-        $xhr.open("PUT", $xhr_values.Url , $xhr_values.Type);
-        $xhr.setRequestHeader('Content-Type', $xhr_values.Content_Type+';charset=UTF-8');
-        $xhr.setRequestHeader('Accept',$xhr_values.Accept);
-        $xhr.setRequestHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0');
-        $xhr.setRequestHeader('Pragma', 'no-cache');
-        $xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        $xhr.onreadystatechange = $xhr_values.Return;
-        $xhr.send($xhr_values.Data);
-    }
-}
-/* Envio de informacion con method DELETE */
-function deleteData($xhr_values) {
-    if ($xhr_values.Return==null || $xhr_values.Return === undefined) {
-        $xhr_values.Return = OnStateChange;
-    }
-    if ($xhr_values.Message !== undefined && $xhr_values.Message !== null) {
-        $message_list = $xhr_values.Message.split("|");
-    } else {
-        $message_list = [];
-    }
-    if ($xhr_values.Type === undefined || $xhr_values.Type == null){
-        $xhr_values.Type = true;
-    } 
-    if ($xhr_values.Data === undefined){
-        return false;
-    } else {
-        var miAleatorio = new Date().getTime();
-        $xhr.open("DELETE", $xhr_values.Url , $xhr_values.Type);
-        $xhr.setRequestHeader('Content-Type', $xhr_values.Content_Type+';charset=UTF-8');
-        $xhr.setRequestHeader('Accept',$xhr_values.Accept);
-        $xhr.setRequestHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0');
-        $xhr.setRequestHeader('Pragma', 'no-cache');
-        $xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        $xhr.onreadystatechange = $xhr_values.Return;
-        $xhr.send($xhr_values.Data);
-    }
-}
+
 function OnStateChange() {
+    /*
+    0: request not initialized
+    1: server connection established
+    2: request received
+    3: processing request
+    4: request finished and response is ready
+    */
+    try{
+    var $tt;
+    if (typeof $contain == "undefined"){
+        var $contain = document.getElementById('contain') || null;
+    }
+    if (typeof $loadingMessage == "undefined"){
+        var $loadingMessage = document.getElementById('loadingMessage') || null;
+    }
+    if (typeof $message == "undefined"){
+        var $message = document.getElementById('alert.message') || null;
+    }
+    if (typeof $message_display == "undefined"){
+        var $message_display = document.getElementById('_message') || null;
+    }
+    if ($contain !== null && $loadingMessage !== null){
+        $contain.style.display='none';
+        $loadingMessage.style.display='block';
+    }
+    if (typeof $debug == "undefined"){
+        var $debug = false;
+    }
     if ($xhr.readyState==4) {
-        if ($xhr.status==200) {
+        if ($xhr.status>=200 && $xhr.status<300) {
             if ($message_list.length>0) {
-                if (document.getElementById('message') === null){
+                if ($message == null){
                     alert($message_list[0]);
                 } else {
-                    document.getElementById('alert.modalTitle').innerHTML='INFORMACION';
-                    document.getElementById('alert.message').innerHTML=$message_list[0];
-                    document.getElementById("alert.button").click();
+                    if ($debug){
+                        console.log($xhr.responseText);
+                        console.log($xhr.responseType);
+                    }
+                    $message.innerHTML=$message_list[0];
+                    console.log($message_list[0]);
+                    if ($loadingMessage !== null){
+                        $loadingMessage.style.display='none';
+                    }
+                    $message_display.style.display='block';
+                    $tt=setTimeout(function(){ $message_display.style.display='none'; }, 3000);
                 }
-            } else {
-                console.log($xhr.responseText);
             }
-            /* comprobar path si admin */
-            if(typeof($path) != "undefined"){
-                if ( $path.indexOf('admin') > -1 ) {
-                    window.location.href = $path;
-                }
-            } 
-        } else {
+        } else if($xhr.status>=400) {
             if ($message_list.length>1) {
-                if (document.getElementById('message') === null){
+                if ($message == null){
                     alert($message_list[1]);
                 } else {
-                    document.getElementById('alert.modalTitle').innerHTML='INFORMACION';
-                    document.getElementById('alert.message').innerHTML=$message_list[1];
-                    document.getElementById("alert.button").click();
+                    $message.innerHTML=$message_list[1];
+                    console.log($message_list[1])
+                    if ($loadingMessage !== null){
+                        $loadingMessage.style.display='none';
+                    }
+                    $message_display.style.display='block';
+                    $tt=setTimeout(function(){ $message_display.style.display='none'; }, 3000);
                 }
-            } else {
-                console.log($xhr.responseText);
             }
+            window.location.href = "/";
         } 
-        console.log($xhr.status);
-    } else if ($xhr.readyState==1) {
-        /* conexion establecida */
-        /* consulta recibida    */
-        console.log('readyState ' + $xhr.readyState);
-        console.log('status ' + $xhr.status); 
-    } else if ($xhr.readyState==2) {
-        /* en espera */
-        console.log('readyState ' + $xhr.readyState);
-        console.log('status ' + $xhr.status); 
-    } else if ($xhr.readyState==3) {
-        /* procesando */ 
-        console.log('readyState ' + $xhr.readyState);
-        console.log('status ' + $xhr.status); 
-    } else {
-        console.log('readyState ' + $xhr.readyState);
-        console.log('status ' + $xhr.status); 
     }
+    } catch(err) {
+        console.log(err.name); 
+        console.log(err.message);    
+        console.log(err.fileName);   
+        console.log(err.stack);
+        console.log(err.lineNumber); 
+        console.log(err.line);       
+    }
+    if ($contain !== null && $loadingMessage !== null){
+        $contain.style.display='inline';
+        $loadingMessage.style.display='none';
+    }
+    return;
+}
+
+function onprogressHandler(evt) {
+    var percent = evt.loaded/evt.total*100;
+    /* progressBar.value = percent; */
+    console.log('Upload progress: ' + percent + '%');
 }

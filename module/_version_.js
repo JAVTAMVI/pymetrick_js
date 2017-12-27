@@ -1,5 +1,5 @@
 /**************************************************************************************
-  pymetrick.js v0.31
+  pymetrick.js v0.34
   
   Copyright (c) 2014, Fco. Javier Tamarit
   All Rights Reserved
@@ -27,3 +27,6 @@
   OF THE POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************************/
 'use strict';
+var $debug=false;
+var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;

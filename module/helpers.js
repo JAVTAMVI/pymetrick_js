@@ -67,21 +67,14 @@ function moveOnMax(field,nextFieldID){
 function esc(text) {
     return text.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
 }
-/* Pausar la ejecucion una cantidad de milisegundos */
-function pause(milisec){
-	var d = new Date();
-	var begin = d.getTime();
-	while ((d.getTime() - begin ) > milisec){
-        /* Esperar sin hacer nada */
-        console.log(d.getTime()-begin);
-	}
-} 
-function sleep(ms)
+
+/* Pausar la ejecucion una cantidad de segundos */
+function sleep(ss)
   {
-    var dt = new Date();
-    dt.setTime(dt.getTime() + ms);
-    while (new Date().getTime() < dt.getTime());
+    var dt = Math.floor(Date.now() / 1000);
+    while ( Math.floor(Date.now() / 1000) < (dt+ss));
   }
+
 /* Ocultar un elemento */
 function hideElement(elementID) {
    document.getElementById(elementID).style.display ='none';
@@ -95,6 +88,11 @@ function showElement(elementID) {
 /* Insertar un elemento */
 function insertElement(elementID,mixed_var) {
    document.getElementById(elementID).innerHTML=mixed_var;
+}
+
+/* Obtener focus - for FIREFOX */
+function focusMe(id){
+     setTimeout(function(){ document.getElementById(id).focus(); }, 500);
 }
 
 /* Rellenar las opciones de un select */
@@ -115,6 +113,19 @@ function fillOptions(elementID,json_object) {
     }
     /* inicializa la vista de opciones disponibles */
     $e.selectedIndex = $option_selected;
+}
+
+/* Tratamiento de TABLE */
+function addRow(id){
+   /* incorporar una fila al final de una tabla */
+   t = document.getElementById(id);
+   var newRow = t.tBodies[0].rows[0].cloneNode(true);
+   for (var n=0;n<newRow.cells.length;n++){
+       newRow.cells[n].innerHTML = '';
+   }
+   /*newRow.cells[0].innerHTML = "cell 1 content";
+   newRow.cells[1].innerHTML = "cell 2 content";*/
+   t.tBodies[0].appendChild(newRow);
 }
 
 /* comprobar dimension de un objeto dict si el navegador no soportara Object.keys */

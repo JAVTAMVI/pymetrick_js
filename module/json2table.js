@@ -7,7 +7,7 @@
 //                         {'head':'Codigo Postal','field':{'type':'text','id':'postcode','name':'postcode','value':'','placeholder':'Codigo Postal','class':'w3-input'}},
 //                         {'head':'Provincia','field':{'type':'select','id':'zone_code','name':'zone_code','class':'w3-input'}},
 //                         {'head':'Pais','field':{'type':'text','id':'country_iso_code_2','name':'country_iso_code_2','value':'','placeholder':'Pais','class':'w3-input'}},
-//                         {'head':'','field':{'type':'button','id':'edit','name':'edit','value':'','icon':'fa fa-pencil','class':'w3-btn-floating w3-white border-ligth-grey w3-hover-blue w3-border w3-text-shadow','data-id-row':''}},
+//                         {'head':'','field':{'type':'button','id':'edit','name':'edit','value':'','icon':'<i class="material-icons">widgets</i>','class':'w3-btn-floating w3-white border-ligth-grey w3-hover-blue w3-border w3-text-shadow','data-id-row':''}},
 //                         {'head':'','field':{'type':'button','id':'delete','name':'delete','value':'','icon':'fa fa-times','class':'w3-btn-floating w3-white border-ligth-grey w3-hover-blue w3-border w3-text-shadow','data-id-row':''}},
 //                         {'endtag':'/TR'},
 //                         {'endtag':'/THEAD'},
@@ -55,7 +55,12 @@ class jsonTable {
                                   try{
                                       this.$_table.setAttribute($j,this.$jsTable[$j]);
                                   } catch(err) {
-                                      console.log(err.message);
+                                      console.log(err.name); 
+                                      console.log(err.message);    
+                                      console.log(err.fileName);   
+                                      console.log(err.stack);
+                                      console.log(err.lineNumber); 
+                                      console.log(err.line);
                                   }
                           }
                       }
@@ -100,7 +105,12 @@ class jsonTable {
                               this.addHead(this.$jsTable[$j][$e]);
                           }
                       } catch(err) {
-                          console.log(err.message);
+                          console.log(err.name); 
+                          console.log(err.message);    
+                          console.log(err.fileName);   
+                          console.log(err.stack);
+                          console.log(err.lineNumber); 
+                          console.log(err.line);
                       }   
                   }
               }
@@ -147,7 +157,12 @@ class jsonTable {
                           try {
                               $_input.setAttribute($n,$m[$n]); 
                           } catch(err) {
-                              console.log(err.message);
+                              console.log(err.name); 
+                              console.log(err.message);    
+                              console.log(err.fileName);   
+                              console.log(err.stack);
+                              console.log(err.lineNumber); 
+                              console.log(err.line);
                           }   
                           break;
                 }
@@ -191,7 +206,12 @@ class jsonTable {
                 }    
             }
           } catch(err) {
-              console.log(err.message);
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           } 
       }
       // add button 
@@ -212,13 +232,18 @@ class jsonTable {
                           $_button.appendChild(document.createTextNode($m['value']));
                           break;
                     case 'icon':
-                        $_button.innerHTML = "<i class='"+$m['icon']+"'></i>";
+                        $_button.innerHTML = $m['icon'];
                         break;
                     default:
                           try {
                               $_button.setAttribute($n,$m[$n]); 
                           } catch(err) {
-                              console.log(err.message);
+                              console.log(err.name); 
+                              console.log(err.message);    
+                              console.log(err.fileName);   
+                              console.log(err.stack);
+                              console.log(err.lineNumber); 
+                              console.log(err.line);
                           }   
                           break;
                 }
@@ -230,7 +255,12 @@ class jsonTable {
                 this.$_table.appendChild($_button);
             }
           } catch(err) {
-              console.log(err.message);
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           }  
       }
       /* asociar SELECT a un subnodo o form */ 
@@ -285,8 +315,8 @@ class jsonTable {
                            } else {
                               $_url = $m[$n];
                            }                                                                               
-                           var $xhr_values = Object.create({'Data':$_data,'Url':$_url,'Return':OnStateChange,'Type':false,'Content_Type':'text/html','Accept':'application/json'});
-                           postData($xhr_values);
+                           var $xhr_values = {'method':'POST','data':$_data,'url':$_url,'return_function':OnStateChange,'async':false,'content_type':'text/html','accept':'application/json','message':[]};
+                           xData($xhr_values);
                            $m[$n] = JSON.parse($xhr.responseText);
                         }
                         if (Object.prototype.toString.call( $m[$n] ) === "[object Array]"){
@@ -312,7 +342,12 @@ class jsonTable {
                           try {
                               $_select.setAttribute($n,$m[$n]); 
                           } catch(err) {
-                              console.log(err.message);
+                              console.log(err.name); 
+                              console.log(err.message);    
+                              console.log(err.fileName);   
+                              console.log(err.stack);
+                              console.log(err.lineNumber); 
+                              console.log(err.line);
                           }   
                           break;
                 }
@@ -336,8 +371,8 @@ class jsonTable {
                                         } else {
                                             $_url = this.$jsValue[$h]['options'];
                                         }
-                                        var $xhr_values = Object.create({'Data':$_data,'Url':$_url,'Return':OnStateChange,'Type':false,'Content_Type':'text/html','Accept':'application/json'});
-                                        postData($xhr_values);
+                                        var $xhr_values = Object.create({'method':'POST','data':$_data,'url':$_url,'return_function':OnStateChange,'async':false,'content_type':'text/html','accept':'application/json'});
+                                        xData($xhr_values);
                                         this.$jsValue[$h]['options'] = JSON.parse($xhr.responseText);
                                     }
                                     for (var $j=0;$j<this.$jsValue[$h]['options'].length;$j++){
@@ -368,7 +403,12 @@ class jsonTable {
                 this.$_table.appendChild($_select);
             }
           } catch(err) {
-              console.log(err.toString());
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           }  
       }
       /* crear y cerrar nodos (DIV,P,A,FIELDSET,...) */ 
@@ -394,7 +434,12 @@ class jsonTable {
                               try {
                                   $tag.setAttribute($n,$m[$n]); 
                               } catch(err) {
-                                  console.log(err.message);
+                                  console.log(err.name); 
+                                  console.log(err.message);    
+                                  console.log(err.fileName);   
+                                  console.log(err.stack);
+                                  console.log(err.lineNumber); 
+                                  console.log(err.line);
                               }   
                               break;
                     }
@@ -414,7 +459,12 @@ class jsonTable {
                 }    
             }
           } catch(err) {
-              console.log(err.message);
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           } 
       }
       /* incorporar cabecera de Table */ 
@@ -438,7 +488,12 @@ class jsonTable {
                 this.$_tag[this.$_tag.length-1].appendChild($td);
             }
           } catch(err) {
-              console.log(err.message);
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           } 
       }
       /* incorporar linea de Table */
@@ -488,7 +543,12 @@ class jsonTable {
                 
             }
           } catch(err) {
-              console.log(err.message);
+              console.log(err.name); 
+              console.log(err.message);    
+              console.log(err.fileName);   
+              console.log(err.stack);
+              console.log(err.lineNumber); 
+              console.log(err.line);
           } 
       }
       /* table sin valores */
@@ -545,6 +605,11 @@ function clone($obj) {
       }
       return $temp;
     } catch(err) {
-        console.log(err.message);
+        console.log(err.name); 
+        console.log(err.message);    
+        console.log(err.fileName);   
+        console.log(err.stack);
+        console.log(err.lineNumber); 
+        console.log(err.line);
     } 
 }
